@@ -1,0 +1,11 @@
+{
+  "name": "chord",
+  "version": "0.0.0",
+  "dependencies": {
+    "body-parser": "1.12.3",
+    "defekt": "0.0.2",
+    "express": "4.12.3",
+    "flaschenpost": "0.8.3",
+    "request": "2.55.0"
+  }
+}
