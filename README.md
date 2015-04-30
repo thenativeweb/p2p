@@ -8,7 +8,39 @@ chord2 is a ring-based peer-to-peer protocol.
 
 ## Quick start
 
-...
+First you need to add a reference to chord2.
+
+```javascript
+var Chord = require('chord2');
+```
+
+Then create a new node by calling the constructor function and specifying the host and the port to listen on.
+
+```javascript
+var chord = new Chord({
+  host: 'localhost',
+  port: 3000
+});
+```
+
+To join another node, call the `join` function and provide the host and the port of the node you want to join.
+
+```javascript
+chord.join({
+  host: 'localhost',
+  port: 4000
+}, function (err) {
+  // ...
+});
+```
+
+If you want to find the node responsible for a value, call the `getNodeFor` function and provide the value as a string.
+
+```javascript
+chord.getNodeFor('foobar', function (err, node) {
+  // ...
+});
+```
 
 ## Running the build
 
