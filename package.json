@@ -1,12 +1,44 @@
 {
-  "name": "chord",
+  "name": "chord2",
   "version": "0.0.0",
+  "description": "chord2 is a ring-based peer-to-peer protocol.",
+  "contributors": [
+    {
+      "name": "Golo Roden",
+      "email": "golo.roden@thenativeweb.io"
+    },
+    {
+      "name": "Matthias Wagler",
+      "email": "matthias.wagler@thenativeweb.io"
+    },
+    {
+      "name": "Michael Scherer",
+      "email": "mail@michael-scherer.net"
+    }
+  ],
+  "main": "lib/Chord.js",
   "dependencies": {
     "body-parser": "1.12.3",
     "defekt": "0.0.2",
     "express": "4.12.3",
     "flaschenpost": "0.8.3",
     "request": "2.55.0",
-    "timer2": "0.2.3"
-  }
+    "timer2": "0.2.3",
+  },
+  "devDependencies": {
+    "assertthat": "0.6.0",
+    "grunt": "0.4.5",
+    "tourism": "0.17.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thenativeweb/chord2.git"
+  },
+  "keywords": [
+    "chord",
+    "dht",
+    "p2p",
+    "peertopeer"
+  ],
+  "license": "MIT"
 }
