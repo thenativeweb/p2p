@@ -23,7 +23,7 @@
     "express": "4.12.3",
     "flaschenpost": "0.8.3",
     "request": "2.55.0",
-    "timer2": "0.2.3",
+    "timer2": "0.2.3"
   },
   "devDependencies": {
     "assertthat": "0.6.0",
