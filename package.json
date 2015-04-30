@@ -6,6 +6,7 @@
     "defekt": "0.0.2",
     "express": "4.12.3",
     "flaschenpost": "0.8.3",
-    "request": "2.55.0"
+    "request": "2.55.0",
+    "timer2": "0.2.3"
   }
 }
