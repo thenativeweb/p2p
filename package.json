@@ -18,7 +18,7 @@
   ],
   "main": "lib/Chord.js",
   "dependencies": {
-    "body-parser": "1.12.3",
+    "body-parser": "1.12.4",
     "defekt": "0.0.2",
     "express": "4.12.3",
     "flaschenpost": "0.8.3",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "assertthat": "0.6.0",
     "grunt": "0.4.5",
-    "tourism": "0.17.0"
+    "tourism": "0.18.0"
   },
   "repository": {
     "type": "git",
