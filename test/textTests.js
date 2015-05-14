@@ -34,6 +34,11 @@ suite('text', function () {
       assert.that(text.repeat('a', 5)).is.equalTo('aaaaa');
       done();
     });
+
+    test('returns an empty string if count is 0.', function (done) {
+      assert.that(text.repeat('a', 0)).is.equalTo('');
+      done();
+    });
   });
 
   suite('padLeft', function () {
