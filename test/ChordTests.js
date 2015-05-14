@@ -9,4 +9,6 @@ suite('Chord', function () {
     assert.that(Chord).is.ofType('function');
     done();
   });
+
+  test.skip('...');
 });
