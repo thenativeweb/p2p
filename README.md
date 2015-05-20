@@ -33,6 +33,8 @@ var chord = new Chord({
 });
 ```
 
+### Joining a Chord ring
+
 To join another node, call the `join` function and provide the host and the port of the node you want to join.
 
 ```javascript
@@ -44,10 +46,26 @@ chord.join({
 });
 ```
 
+### Finding the responsible node
+
 If you want to find the node responsible for a value, call the `getNodeFor` function and provide the value as a string.
 
 ```javascript
 chord.getNodeFor('foobar', function (err, node) {
+  // ...
+});
+```
+
+### Detecting changes in your neighborhood
+
+To detect whether the successor or predecessor of a node changed, subscribe to the `changed-successor` and `changed-predecessor` events. Please note that the predecessor may be `undefined`.
+
+```javascript
+chord.on('changed-successor', function (successor) {
+  // ...
+});
+
+chord.on('changed-predecessor', function (predecessor) {
   // ...
 });
 ```
