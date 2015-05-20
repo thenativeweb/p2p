@@ -16,10 +16,14 @@ var Chord = require('chord2');
 
 Then create a new node by calling the constructor function and specifying the host and the port to listen on.
 
+Additionally, you need to specify a private key and a certificate. Please note that these values must be strings that contain data in `.pem` format.
+
 ```javascript
 var chord = new Chord({
   host: 'localhost',
-  port: 3000
+  port: 3000,
+  privateKey: '...',
+  certificate: '...'
 });
 ```
 
@@ -29,6 +33,8 @@ By default, a node tries to do housekeeping around every 30 seconds. If you want
 var chord = new Chord({
   host: 'localhost',
   port: 3000,
+  privateKey: '...',
+  certificate: '...',
   serviceInterval: '10s'
 });
 ```
