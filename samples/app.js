@@ -43,6 +43,8 @@ chord.join({
 }, function (err) {
   if (err) {
     logger.fatal('Failed to join.', err);
+    /*eslint-disable no-process-exit*/
     process.exit(1);
+    /*eslint-enable no-process-exit*/
   }
 });
