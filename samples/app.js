@@ -36,3 +36,13 @@ chord.on('changed-predecessor', function (predecessor) {
     status: chord.status()
   });
 });
+
+chord.join({
+  host: 'localhost',
+  port: 3000
+}, function (err) {
+  if (err) {
+    logger.fatal('Failed to join.', err);
+    process.exit(1);
+  }
+});
