@@ -1,6 +1,6 @@
 {
   "name": "chord2",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "chord2 is a ring-based peer-to-peer protocol.",
   "contributors": [
     {
