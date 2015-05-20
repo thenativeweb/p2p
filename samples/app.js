@@ -1,15 +1,25 @@
 'use strict';
 
+var fs = require('fs'),
+    path = require('path');
+
 var flaschenpost = require('flaschenpost'),
     processEnv = require('processenv');
 
 var Chord = require('../lib/Chord');
 
-var logger = flaschenpost.getLogger();
+var chord,
+    logger = flaschenpost.getLogger();
 
-var chord = new Chord({
+/*eslint-disable no-process-env*/
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+/*eslint-enable no-process-env*/
+
+chord = new Chord({
   host: processEnv('HOST') || 'localhost',
   port: processEnv('PORT') || 3000,
+  privateKey: fs.readFileSync(path.join(__dirname, 'keys', 'privateKey.pem')),
+  certificate: fs.readFileSync(path.join(__dirname, 'keys', 'certificate.pem')),
   serviceInterval: processEnv('SERVICE_INTERVAL') || '30s'
 });
 
