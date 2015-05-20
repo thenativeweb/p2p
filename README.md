@@ -46,6 +46,13 @@ chord.join({
 });
 ```
 
+To get the status of a node call its `status` function.
+
+```javascript
+console.log(chord.status());
+// => 'lonely' or 'joining' or 'joined'
+```
+
 ### Finding the responsible node
 
 If you want to find the node responsible for a value, call the `getNodeFor` function and provide the value as a string.
