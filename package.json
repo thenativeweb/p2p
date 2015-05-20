@@ -22,6 +22,7 @@
     "defekt": "0.0.2",
     "express": "4.12.4",
     "flaschenpost": "0.8.5",
+    "parse-duration": "0.1.1",
     "request": "2.55.0",
     "timer2": "0.2.3"
   },

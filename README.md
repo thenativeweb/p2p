@@ -23,6 +23,16 @@ var chord = new Chord({
 });
 ```
 
+By default, a node tries to do housekeeping around every 30 seconds. If you want to change this, provide another `serviceInterval`.
+
+```javascript
+var chord = new Chord({
+  host: 'localhost',
+  port: 3000,
+  serviceInterval: '10s'
+});
+```
+
 To join another node, call the `join` function and provide the host and the port of the node you want to join.
 
 ```javascript
