@@ -14,9 +14,15 @@ var chord = new Chord({
 });
 
 chord.on('changed-successor', function (successor) {
-  logger.info('Changed successor.', successor);
+  logger.info('Changed successor.', {
+    successor: successor,
+    status: chord.status()
+  });
 });
 
 chord.on('changed-predecessor', function (predecessor) {
-  logger.info('Changed predecessor.', predecessor);
+  logger.info('Changed predecessor.', {
+    predecessor: predecessor,
+    status: chord.status()
+  });
 });
