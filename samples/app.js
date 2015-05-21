@@ -18,8 +18,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 chord = new Chord({
   host: processEnv('HOST') || 'localhost',
   port: processEnv('PORT') || 3000,
-  privateKey: fs.readFileSync(path.join(__dirname, 'keys', 'localhost.selfsigned', 'privateKey.pem')),
-  certificate: fs.readFileSync(path.join(__dirname, 'keys', 'localhost.selfsigned', 'certificate.pem')),
+  privateKey: fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'privateKey.pem')),
+  certificate: fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
   serviceInterval: processEnv('SERVICE_INTERVAL') || '30s'
 });
 

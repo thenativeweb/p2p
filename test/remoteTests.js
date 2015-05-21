@@ -76,6 +76,13 @@ suite('remote', function () {
       });
     });
 
+    test('returns an error if the target is not reachable.', function (done) {
+      remote('localhorst', 3000).run('rpc', function (err) {
+        assert.that(err).is.not.null();
+        done();
+      });
+    });
+
     test('returns an error if a status code other than 200 is returned.', function (done) {
       var scope = nock('https://localhost:3000').
         post('/rpc', {}).

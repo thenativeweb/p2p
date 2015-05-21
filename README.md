@@ -56,7 +56,7 @@ To get the status of a node call its `status` function.
 
 ```javascript
 console.log(chord.status());
-// => 'lonely' or 'joining' or 'joined'
+// => 'lonely' or 'unbalanced' or 'joined'
 ```
 
 ### Finding the responsible node

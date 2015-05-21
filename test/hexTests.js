@@ -96,6 +96,11 @@ suite('hex', function () {
 
     suite('multiple digits', function () {
       suite('without overflow', function () {
+        test('1 + f3 => f4', function (done) {
+          assert.that(hex.add('1', 'f3')).is.equalTo('f4');
+          done();
+        });
+
         test('f3 + 1 => f4', function (done) {
           assert.that(hex.add('f3', '1')).is.equalTo('f4');
           done();

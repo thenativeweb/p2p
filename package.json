@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "assertthat": "0.6.0",
+    "freeport": "1.0.5",
     "grunt": "0.4.5",
     "nock": "2.2.0",
     "tourism": "0.19.0"

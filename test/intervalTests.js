@@ -110,6 +110,18 @@ suite('interval', function () {
           done();
         });
       });
+
+      suite('with only one value in the interval', function () {
+        test('returns false for the value itself.', function (done) {
+          assert.that(interval({ left: 42, right: 42, type: 'open' }).contains(42)).is.false();
+          done();
+        });
+
+        test('returns true for any other value.', function (done) {
+          assert.that(interval({ left: 42, right: 42, type: 'open' }).contains(23)).is.true();
+          done();
+        });
+      });
     });
 
     suite('leftopen', function () {
@@ -163,6 +175,18 @@ suite('interval', function () {
 
         test('returns true for a large value.', function (done) {
           assert.that(interval({ left: 42, right: 23, type: 'leftopen' }).contains(65)).is.true();
+          done();
+        });
+      });
+
+      suite('with only one value in the interval', function () {
+        test('returns true for the value itself.', function (done) {
+          assert.that(interval({ left: 42, right: 42, type: 'leftopen' }).contains(42)).is.true();
+          done();
+        });
+
+        test('returns true for any other value.', function (done) {
+          assert.that(interval({ left: 42, right: 42, type: 'leftopen' }).contains(23)).is.true();
           done();
         });
       });
