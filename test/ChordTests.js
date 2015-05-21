@@ -194,12 +194,12 @@ suite('Chord', function () {
       });
 
       test('defaults to 30 seconds.', function (done) {
-        freeport(function (err, port) {
+        freeport(function (err, freePort) {
           assert.that(err).is.null();
-          
+
           chord = new Chord({
             host: 'localhost',
-            port: port,
+            port: freePort,
             privateKey: privateKey,
             certificate: certificate
           });
