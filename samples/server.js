@@ -53,33 +53,31 @@ chord.on('changed-predecessor', function (predecessor) {
   });
 });
 
-setTimeout(function () {
-  chord.join({ host: 'localhost', port: p2pPortJoin }, function (err) {
-    if (err) {
-      logger.fatal('Failed to join.', err);
-      /*eslint-disable no-process-exit*/
-      process.exit(1);
-      /*eslint-enable no-process-exit*/
-    }
+chord.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
+  if (errJoin) {
+    logger.fatal('Failed to join.', errJoin);
+    /*eslint-disable no-process-exit*/
+    process.exit(1);
+    /*eslint-enable no-process-exit*/
+  }
 
-    app = express();
+  app = express();
 
-    app.use(bodyParser.json());
+  app.use(bodyParser.json());
 
-    app.post('/get-node-for', function (req, res) {
-      chord.getNodeFor(req.body.value, function (err, node, metadata) {
-        if (err) {
-          return res.sendStatus(500);
-        }
-        res.send(metadata);
-      });
+  app.post('/get-node-for', function (req, res) {
+    chord.getNodeFor(req.body.value, function (errGetNodeFor, node, metadata) {
+      if (errGetNodeFor) {
+        return res.sendStatus(500);
+      }
+      res.send(metadata);
     });
-
-    app.post('/job', function (req, res) {
-      logger.info('Received job.', req.body);
-      res.sendStatus(200);
-    });
-
-    http.createServer(app).listen(httpPort);
   });
-}, 1000);
+
+  app.post('/job', function (req, res) {
+    logger.info('Received job.', req.body);
+    res.sendStatus(200);
+  });
+
+  http.createServer(app).listen(httpPort);
+});

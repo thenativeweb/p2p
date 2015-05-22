@@ -13,7 +13,7 @@ var port = processEnv('PORT') || 3000;
 
 var job = {
   id: process.argv[2] || uuid(),
-  data: process.argv[3] || 'foo'
+  data: process.argv[3] || 'foo'
 };
 
 request.post(url.format({
@@ -26,7 +26,7 @@ request.post(url.format({
   json: true
 }, function (errGetNodeFor, resGetNodeFor, node) {
   if (errGetNodeFor) {
-    logger.fatal('Failed to get the responsible node.', err);
+    logger.fatal('Failed to get the responsible node.', errGetNodeFor);
     /*eslint-disable no-process-exit*/
     process.exit(1);
     /*eslint-enable no-process-exit*/
@@ -42,7 +42,7 @@ request.post(url.format({
     json: true
   }, function (errJob, resJob) {
     if (errJob || (resJob.statusCode !== 200)) {
-      logger.fatal('Failed to send job.', err);
+      logger.fatal('Failed to send job.', errJob);
       /*eslint-disable no-process-exit*/
       process.exit(1);
       /*eslint-enable no-process-exit*/
