@@ -27,7 +27,7 @@ var chord = new Chord({
 });
 ```
 
-Optionally you may specify a `metadata` property to attach arbitrary data to a node. These metadata will be available to others when asking for information about the node. You may use it to store information on services a node offers.
+Optionally you may specify a `metadata` property to attach arbitrary data to a node. These metadata will be available to others when asking for information about the node. You may use it, e.g., to store information on services a node offers.
 
 ```javascript
 var chord = new Chord({
