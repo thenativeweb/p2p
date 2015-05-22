@@ -119,6 +119,20 @@ suite('Chord', function () {
     done();
   });
 
+  test('optionally sets metadata.', function (done) {
+    var chord = new Chord({
+      host: 'localhost',
+      port: port,
+      privateKey: privateKey,
+      certificate: certificate,
+      metadata: { foo: 'bar' },
+      serviceInterval: serviceInterval
+    });
+
+    assert.that(chord.metadata).is.equalTo({ foo: 'bar' });
+    done();
+  });
+
   suite('instance', function () {
     var chord;
 
@@ -147,6 +161,13 @@ suite('Chord', function () {
           port: port,
           id: getId('localhost:' + port)
         });
+        done();
+      });
+    });
+
+    suite('metadata', function () {
+      test('initially is an empty object.', function (done) {
+        assert.that(chord.metadata).is.equalTo({});
         done();
       });
     });
@@ -529,7 +550,7 @@ suite('Chord', function () {
       });
 
       test('calls findSuccessor with the id of the given value.', function (done) {
-        var scope = nock('https://localhost:' + port).
+        var scopeFindSuccessor = nock('https://localhost:' + port).
           post('/find-successor', { id: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }).
           reply(200, {
             host: 'example.com',
@@ -537,14 +558,22 @@ suite('Chord', function () {
             id: getId('example.com:3000')
           });
 
-        chord.getNodeFor('foo', function (err, successor) {
+        var scopeMetadata = nock('https://example.com:3000').
+          post('/metadata').
+          reply(200, { foo: 'bar' });
+
+        chord.getNodeFor('foo', function (err, node, metadata) {
           assert.that(err).is.null();
-          assert.that(successor).is.equalTo({
+          assert.that(node).is.equalTo({
             host: 'example.com',
             port: 3000,
             id: getId('example.com:3000')
           });
-          assert.that(scope.isDone()).is.true();
+          assert.that(metadata).is.equalTo({
+            foo: 'bar'
+          });
+          assert.that(scopeFindSuccessor.isDone()).is.true();
+          assert.that(scopeMetadata.isDone()).is.true();
           done();
         });
       });

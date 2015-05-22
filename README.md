@@ -27,7 +27,23 @@ var chord = new Chord({
 });
 ```
 
-By default, a node tries to do housekeeping around every 30 seconds. If you want to change this, provide another `serviceInterval`.
+Optionally you may specify a `metadata` property to attach arbitrary data to a node. These metadata will be available to others when asking for information about the node. You may use it to store information on services a node offers.
+
+```javascript
+var chord = new Chord({
+  host: 'localhost',
+  port: 3000,
+  privateKey: '...',
+  certificate: '...',
+  metadata: {
+    foo: 'bar'
+  }
+});
+```
+
+### Configuring housekeeping
+
+By default, a node tries to do housekeeping around every 30 seconds. If you need to change this, provide a property called `serviceInterval`.
 
 ```javascript
 var chord = new Chord({
@@ -38,6 +54,8 @@ var chord = new Chord({
   serviceInterval: '10s'
 });
 ```
+
+Please note that this affects the way the protocol works. Hence setting the `serviceInterval` property should be avoided in most cases.
 
 ### Joining a Chord ring
 
@@ -63,8 +81,10 @@ console.log(chord.status());
 
 If you want to find the node responsible for a value, call the `getNodeFor` function and provide the value as a string.
 
+As a result you will get information on the node itself as well as its metadata. If no metadata have been set, an empty object is returned.
+
 ```javascript
-chord.getNodeFor('foobar', function (err, node) {
+chord.getNodeFor('foobar', function (err, node, metadata) {
   // ...
 });
 ```
