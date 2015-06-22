@@ -1,6 +1,6 @@
 {
   "name": "p2p",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "p2p implements a peer-to-peer protocol.",
   "contributors": [
     {
