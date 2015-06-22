@@ -9,7 +9,7 @@ var bodyParser = require('body-parser'),
     flaschenpost = require('flaschenpost'),
     processEnv = require('processenv');
 
-var Chord = require('../lib/Chord');
+var Peer = require('../lib/Peer');
 
 var httpPort = processEnv('HTTP_PORT') || 3000,
     p2pPort = processEnv('P2P_PORT') || 3001,
@@ -20,14 +20,14 @@ var certificate = fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.
     privateKey = fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'privateKey.pem'));
 
 var app,
-    chord,
-    logger = flaschenpost.getLogger();
+    logger = flaschenpost.getLogger(),
+    peer;
 
 /*eslint-disable no-process-env*/
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 /*eslint-enable no-process-env*/
 
-chord = new Chord({
+peer = new Peer({
   host: 'localhost',
   port: p2pPort,
   privateKey: privateKey,
@@ -39,21 +39,21 @@ chord = new Chord({
   serviceInterval: serviceInterval
 });
 
-chord.on('changed-successor', function (successor) {
+peer.on('changed-successor', function (successor) {
   logger.debug('Changed successor.', {
     successor: successor,
-    status: chord.status()
+    status: peer.status()
   });
 });
 
-chord.on('changed-predecessor', function (predecessor) {
+peer.on('changed-predecessor', function (predecessor) {
   logger.debug('Changed predecessor.', {
     predecessor: predecessor,
-    status: chord.status()
+    status: peer.status()
   });
 });
 
-chord.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
+peer.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
   if (errJoin) {
     logger.fatal('Failed to join.', errJoin);
     /*eslint-disable no-process-exit*/
@@ -66,7 +66,7 @@ chord.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
   app.use(bodyParser.json());
 
   app.post('/get-node-for', function (req, res) {
-    chord.getNodeFor(req.body.value, function (errGetNodeFor, node, metadata) {
+    peer.getNodeFor(req.body.value, function (errGetNodeFor, node, metadata) {
       if (errGetNodeFor) {
         return res.sendStatus(500);
       }

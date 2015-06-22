@@ -1,17 +1,17 @@
-# chord2
+# p2p
 
-chord2 is a ring-based peer-to-peer protocol.
+p2p implements a peer-to-peer protocol.
 
 ## Installation
 
-    $ npm install chord2
+    $ npm install p2p
 
 ## Quick start
 
-First you need to add a reference to chord2.
+First you need to add a reference to p2p.
 
 ```javascript
-var Chord = require('chord2');
+var Peer = require('p2p');
 ```
 
 Then create a new node by calling the constructor function and specifying the host and the port to listen on.
@@ -19,7 +19,7 @@ Then create a new node by calling the constructor function and specifying the ho
 Additionally, you need to specify a private key and a certificate. Please note that these values must be strings that contain data in `.pem` format.
 
 ```javascript
-var chord = new Chord({
+var peer = new Peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -30,7 +30,7 @@ var chord = new Chord({
 Optionally you may specify a `metadata` property to attach arbitrary data to a node. These metadata will be available to others when asking for information about the node. You may use it, e.g., to store information on services a node offers.
 
 ```javascript
-var chord = new Chord({
+var peer = new Peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -46,7 +46,7 @@ var chord = new Chord({
 By default, a node tries to do housekeeping around every 30 seconds. If you need to change this, provide a property called `serviceInterval`.
 
 ```javascript
-var chord = new Chord({
+var peer = new Peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -57,12 +57,12 @@ var chord = new Chord({
 
 Please note that this affects the way the protocol works. Hence setting the `serviceInterval` property should be avoided in most cases.
 
-### Joining a Chord ring
+### Joining a p2p network
 
 To join another node, call the `join` function and provide the host and the port of the node you want to join.
 
 ```javascript
-chord.join({
+peer.join({
   host: 'localhost',
   port: 4000
 }, function (err) {
@@ -73,7 +73,7 @@ chord.join({
 To get the status of a node call its `status` function.
 
 ```javascript
-console.log(chord.status());
+console.log(peer.status());
 // => 'lonely' or 'unbalanced' or 'joined'
 ```
 
@@ -84,7 +84,7 @@ If you want to find the node responsible for a value, call the `getNodeFor` func
 As a result you will get information on the node itself as well as its metadata. If no metadata have been set, an empty object is returned.
 
 ```javascript
-chord.getNodeFor('foobar', function (err, node, metadata) {
+peer.getNodeFor('foobar', function (err, node, metadata) {
   // ...
 });
 ```
@@ -94,18 +94,18 @@ chord.getNodeFor('foobar', function (err, node, metadata) {
 To detect whether the successor or predecessor of a node changed, subscribe to the `changed-successor` and `changed-predecessor` events. Please note that the predecessor may be `undefined`.
 
 ```javascript
-chord.on('changed-successor', function (successor) {
+peer.on('changed-successor', function (successor) {
   // ...
 });
 
-chord.on('changed-predecessor', function (predecessor) {
+peer.on('changed-predecessor', function (predecessor) {
   // ...
 });
 ```
 
 ## Running the build
 
-This module can be built using [Grunt](http://gruntjs.com/). Besides running the tests, this also analyses the code. To run Grunt, go to the folder where you have installed chord2 and run `grunt`. You need to have [grunt-cli](https://github.com/gruntjs/grunt-cli) installed.
+This module can be built using [Grunt](http://gruntjs.com/). Besides running the tests, this also analyses the code. To run Grunt, go to the folder where you have installed p2p and run `grunt`. You need to have [grunt-cli](https://github.com/gruntjs/grunt-cli) installed.
 
     $ grunt
 
