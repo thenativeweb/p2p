@@ -12,9 +12,9 @@ var bodyParser = require('body-parser'),
 var Peer = require('../lib/Peer');
 
 var httpPort = processEnv('HTTP_PORT') || 3000,
-    p2pPort = processEnv('P2P_PORT') || 3001,
-    p2pPortJoin = processEnv('P2P_PORT_JOIN') || p2pPort,
-    serviceInterval = processEnv('SERVICE_INTERVAL') || '30s';
+    p2pPort = processEnv('P2P_PORT') || httpPort + 1,
+    p2pPortJoin = processEnv('P2P_PORT_JOIN') || 3001,
+    serviceInterval = processEnv('SERVICE_INTERVAL') || '1s';
 
 var certificate = fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
     privateKey = fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'privateKey.pem'));
@@ -40,18 +40,25 @@ peer = new Peer({
 });
 
 peer.on('changed-successor', function (successor) {
-  logger.debug('Changed successor.', {
+  logger.info('Changed successor.', {
     successor: successor,
     status: peer.status()
   });
 });
 
 peer.on('changed-predecessor', function (predecessor) {
-  logger.debug('Changed predecessor.', {
+  logger.info('Changed predecessor.', {
     predecessor: predecessor,
     status: peer.status()
   });
 });
+
+peer.handle.print = function (payload, done) {
+  logger.info('Printing job.', payload);
+  done(null, {
+    node: peer.self
+  });
+};
 
 peer.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
   if (errJoin) {
@@ -65,18 +72,18 @@ peer.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
 
   app.use(bodyParser.json());
 
-  app.post('/get-node-for', function (req, res) {
-    peer.getNodeFor(req.body.value, function (errGetNodeFor, node, metadata) {
-      if (errGetNodeFor) {
+  app.post('/job', function (req, res) {
+    peer.getPeerFor(req.body.value, function (errGetPeerFor, node) {
+      if (errGetPeerFor) {
         return res.sendStatus(500);
       }
-      res.send(metadata);
+      peer.remote(node).run('print', req.body, function (err, result) {
+        if (err) {
+          return res.sendStatus(500);
+        }
+        res.send(result);
+      });
     });
-  });
-
-  app.post('/job', function (req, res) {
-    logger.info('Received job.', req.body);
-    res.sendStatus(200);
   });
 
   http.createServer(app).listen(httpPort);

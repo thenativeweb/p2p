@@ -103,6 +103,34 @@ peer.on('changed-predecessor', function (predecessor) {
 });
 ```
 
+### Registering actions
+
+To register custom actions, add them to the `handle` object. If an action is called on a peer, the module will call the appropriate function automatically. Once you are done you need to call the `done` callback. Optionally, you may provide a result.
+
+```javascript
+peer.handle.foo = function (payload, done) {
+  // Do something with payload...
+  if (err) {
+    return done(err);
+  }
+  done(null);
+  // or: done(null, result);
+};
+```
+
+### Calling actions on remote peers
+
+If you want to call an action on a remote peer, call the `remote.run` function, and provide the name of the action as well as its arguments and a callback. If the action returns a result, the callback has a `result` parameter.
+
+```javascript
+peer.remote({
+  host: 'localhost',
+  port: 4000
+}).run('foo', { foo: 'bar' }, function (err, result) {
+  // ...
+});
+```
+
 ## Running the build
 
 This module can be built using [Grunt](http://gruntjs.com/). Besides running the tests, this also analyses the code. To run Grunt, go to the folder where you have installed p2p and run `grunt`. You need to have [grunt-cli](https://github.com/gruntjs/grunt-cli) installed.

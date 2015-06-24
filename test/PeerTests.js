@@ -238,6 +238,48 @@ suite('Peer', function () {
       });
     });
 
+    suite('handle', function () {
+      test('is an empty object.', function (done) {
+        assert.that(peer.handle).is.equalTo({});
+        done();
+      });
+    });
+
+    suite('remote', function () {
+      test('is a function.', function (done) {
+        assert.that(peer.remote).is.ofType('function');
+        done();
+      });
+
+      test('throws an error if target is missing.', function (done) {
+        assert.that(function () {
+          peer.remote();
+        }).is.throwing('Target is missing.');
+        done();
+      });
+
+      test('throws an error if host is missing.', function (done) {
+        assert.that(function () {
+          peer.remote({ port: 3000 });
+        }).is.throwing('Host is missing.');
+        done();
+      });
+
+      test('throws an error if port is missing.', function (done) {
+        assert.that(function () {
+          peer.remote({ host: 'localhost' });
+        }).is.throwing('Port is missing.');
+        done();
+      });
+
+      suite('run', function () {
+        test('is a function.', function (done) {
+          assert.that(peer.remote({ host: 'localhost', port: 3000 }).run).is.ofType('function');
+          done();
+        });
+      });
+    });
+
     suite('setSuccessor', function () {
       test('is a function.', function (done) {
         assert.that(peer.setSuccessor).is.ofType('function');

@@ -20,37 +20,20 @@ request.post(url.format({
   protocol: 'http',
   hostname: 'localhost',
   port: port,
-  pathname: '/get-node-for'
+  pathname: '/job'
 }), {
-  body: { value: job.id },
+  body: { value: job.id, data: job.data },
   json: true
-}, function (errGetNodeFor, resGetNodeFor, node) {
-  if (errGetNodeFor) {
-    logger.fatal('Failed to get the responsible node.', errGetNodeFor);
+}, function (err, res) {
+  if (err || (res.statusCode !== 200)) {
+    logger.fatal('Failed to send job.', err);
     /*eslint-disable no-process-exit*/
     process.exit(1);
     /*eslint-enable no-process-exit*/
   }
 
-  request.post(url.format({
-    protocol: 'http',
-    hostname: node.host,
-    port: node.port,
-    pathname: '/job'
-  }), {
-    body: job,
-    json: true
-  }, function (errJob, resJob) {
-    if (errJob || (resJob.statusCode !== 200)) {
-      logger.fatal('Failed to send job.', errJob);
-      /*eslint-disable no-process-exit*/
-      process.exit(1);
-      /*eslint-enable no-process-exit*/
-    }
-
-    logger.info('Sent job {{job.id}} to {{target.host}}:{{target.port}}.', {
-      job: job,
-      target: node
-    });
+  logger.info('Sent job {{job.id}} to {{target.host}}:{{target.port}}.', {
+    job: job,
+    target: res.body.node
   });
 });
