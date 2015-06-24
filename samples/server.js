@@ -9,7 +9,7 @@ var bodyParser = require('body-parser'),
     flaschenpost = require('flaschenpost'),
     processEnv = require('processenv');
 
-var Peer = require('../lib/Peer');
+var p2p = require('../lib/p2p');
 
 var httpPort = processEnv('HTTP_PORT') || 3000,
     p2pPort = processEnv('P2P_PORT') || httpPort + 1,
@@ -27,7 +27,7 @@ var app,
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 /*eslint-enable no-process-env*/
 
-peer = new Peer({
+peer = p2p.peer({
   host: 'localhost',
   port: p2pPort,
   privateKey: privateKey,
@@ -53,8 +53,8 @@ peer.on('changed-predecessor', function (predecessor) {
   });
 });
 
-peer.handle.print = function (payload, done) {
-  logger.info('Printing job.', payload);
+peer.handle.process = function (payload, done) {
+  logger.info('Processing job.', payload);
   done(null, {
     node: peer.self
   });
@@ -77,7 +77,7 @@ peer.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
       if (errGetPeerFor) {
         return res.sendStatus(500);
       }
-      peer.remote(node).run('print', req.body, function (err, result) {
+      peer.remote(node).run('process', req.body, function (err, result) {
         if (err) {
           return res.sendStatus(500);
         }

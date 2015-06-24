@@ -1,41 +1,16 @@
 'use strict';
 
-var events = require('events'),
-    fs = require('fs'),
-    path = require('path');
+var events = require('events');
 
 var assert = require('assertthat'),
-    freeport = require('freeport'),
     nock = require('nock');
 
 var getId = require('../lib/getId'),
-    Peer = require('../lib/Peer'),
-    remote = require('../lib/remote');
+    Peer = require('../lib/Peer');
 
 var EventEmitter = events.EventEmitter;
 
-/*eslint-disable no-process-env*/
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-/*eslint-enable no-process-env*/
-
 suite('Peer', function () {
-  // Set the service interval to a very long timespan to avoid unwanted
-  // side-effects in the unit tests that are caused by the housekeeping
-  // functions.
-  var serviceInterval = '1h';
-
-  var certificate = fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
-      privateKey = fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'privateKey.pem'));
-
-  var port;
-
-  setup(function (done) {
-    freeport(function (err, result) {
-      port = result;
-      done(err);
-    });
-  });
-
   test('is a function.', function (done) {
     assert.that(Peer).is.ofType('function');
     done();
@@ -54,10 +29,7 @@ suite('Peer', function () {
     assert.that(function () {
       /*eslint-disable no-new*/
       new Peer({
-        port: port,
-        privateKey: privateKey,
-        certificate: certificate,
-        serviceInterval: serviceInterval
+        port: 3000
       });
       /*eslint-enable no-new*/
     }).is.throwing('Host is missing.');
@@ -68,51 +40,17 @@ suite('Peer', function () {
     assert.that(function () {
       /*eslint-disable no-new*/
       new Peer({
-        host: 'localhost',
-        privateKey: privateKey,
-        certificate: certificate,
-        serviceInterval: serviceInterval
+        host: 'localhost'
       });
       /*eslint-enable no-new*/
     }).is.throwing('Port is missing.');
     done();
   });
 
-  test('throws an error if the private key is missing.', function (done) {
-    assert.that(function () {
-      /*eslint-disable no-new*/
-      new Peer({
-        host: 'localhost',
-        port: port,
-        certificate: certificate,
-        serviceInterval: serviceInterval
-      });
-      /*eslint-enable no-new*/
-    }).is.throwing('Private key is missing.');
-    done();
-  });
-
-  test('throws an error if the certificate is missing.', function (done) {
-    assert.that(function () {
-      /*eslint-disable no-new*/
-      new Peer({
-        host: 'localhost',
-        port: port,
-        privateKey: privateKey,
-        serviceInterval: serviceInterval
-      });
-      /*eslint-enable no-new*/
-    }).is.throwing('Certificate is missing.');
-    done();
-  });
-
   test('returns an event emitter.', function (done) {
     var peer = new Peer({
       host: 'localhost',
-      port: port,
-      privateKey: privateKey,
-      certificate: certificate,
-      serviceInterval: serviceInterval
+      port: 3000
     });
 
     assert.that(peer).is.instanceOf(EventEmitter);
@@ -122,11 +60,8 @@ suite('Peer', function () {
   test('optionally sets metadata.', function (done) {
     var peer = new Peer({
       host: 'localhost',
-      port: port,
-      privateKey: privateKey,
-      certificate: certificate,
-      metadata: { foo: 'bar' },
-      serviceInterval: serviceInterval
+      port: 3000,
+      metadata: { foo: 'bar' }
     });
 
     assert.that(peer.metadata).is.equalTo({ foo: 'bar' });
@@ -139,27 +74,17 @@ suite('Peer', function () {
     setup(function (done) {
       peer = new Peer({
         host: 'localhost',
-        port: port,
-        privateKey: privateKey,
-        certificate: certificate,
-        serviceInterval: serviceInterval
+        port: 3000
       });
       done();
-    });
-
-    test('runs a server.', function (done) {
-      remote('localhost', port).run('self', function (err) {
-        assert.that(err).is.null();
-        done();
-      });
     });
 
     suite('self', function () {
       test('contains information on the node itself.', function (done) {
         assert.that(peer.self).is.equalTo({
           host: 'localhost',
-          port: port,
-          id: getId('localhost:' + port)
+          port: 3000,
+          id: getId('localhost:3000')
         });
         done();
       });
@@ -176,8 +101,8 @@ suite('Peer', function () {
       test('initially contains information on the node itself.', function (done) {
         assert.that(peer.successor).is.equalTo({
           host: 'localhost',
-          port: port,
-          id: getId('localhost:' + port)
+          port: 3000,
+          id: getId('localhost:3000')
         });
         done();
       });
@@ -187,8 +112,8 @@ suite('Peer', function () {
       test('initially contains information on the node itself.', function (done) {
         assert.that(peer.predecessor).is.equalTo({
           host: 'localhost',
-          port: port,
-          id: getId('localhost:' + port)
+          port: 3000,
+          id: getId('localhost:3000')
         });
         done();
       });
@@ -204,36 +129,6 @@ suite('Peer', function () {
     suite('fingers', function () {
       test('is initially empty.', function (done) {
         assert.that(peer.fingers).is.equalTo([]);
-        done();
-      });
-    });
-
-    suite('serviceInterval', function () {
-      test('contains the given service interval in milliseconds.', function (done) {
-        assert.that(peer.serviceInterval).is.equalTo(60 * 60 * 1000);
-        done();
-      });
-
-      test('defaults to 30 seconds.', function (done) {
-        freeport(function (err, freePort) {
-          assert.that(err).is.null();
-
-          peer = new Peer({
-            host: 'localhost',
-            port: freePort,
-            privateKey: privateKey,
-            certificate: certificate
-          });
-
-          assert.that(peer.serviceInterval).is.equalTo(30 * 1000);
-          done();
-        });
-      });
-    });
-
-    suite('wobbleFactor', function () {
-      test('contains half the service interval in milliseconds.', function (done) {
-        assert.that(peer.wobbleFactor).is.equalTo(0.5 * peer.serviceInterval);
         done();
       });
     });
@@ -546,7 +441,7 @@ suite('Peer', function () {
       });
 
       test('calls join with the given node.', function (done) {
-        var scope = nock('https://localhost:' + port).
+        var scope = nock('https://localhost:3000').
           post('/join', { host: 'example.com', port: 3000 }).
           reply(200);
 
@@ -558,7 +453,7 @@ suite('Peer', function () {
       });
 
       test('returns an error if the join fails.', function (done) {
-        var scope = nock('https://localhost:' + port).
+        var scope = nock('https://localhost:3000').
           post('/join', { host: 'example.com', port: 3000 }).
           reply(500);
 
@@ -592,7 +487,7 @@ suite('Peer', function () {
       });
 
       test('calls findSuccessor with the id of the given value.', function (done) {
-        var scopeFindSuccessor = nock('https://localhost:' + port).
+        var scopeFindSuccessor = nock('https://localhost:3000').
           post('/find-successor', { id: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }).
           reply(200, {
             host: 'example.com',
@@ -621,7 +516,7 @@ suite('Peer', function () {
       });
 
       test('returns an error if findSuccessor fails.', function (done) {
-        var scope = nock('https://localhost:' + port).
+        var scope = nock('https://localhost:3000').
           post('/find-successor', { id: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }).
           reply(500);
 

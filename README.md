@@ -11,15 +11,15 @@ p2p implements a peer-to-peer protocol.
 First you need to add a reference to p2p.
 
 ```javascript
-var Peer = require('p2p');
+var p2p = require('p2p');
 ```
 
-Then create a new node by calling the constructor function and specifying the host and the port to listen on.
+Then create a new peer by calling the `peer` function and specifying the host and the port to listen on.
 
 Additionally, you need to specify a private key and a certificate. Please note that these values must be strings that contain data in `.pem` format.
 
 ```javascript
-var peer = new Peer({
+var peer = p2p.peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -27,10 +27,10 @@ var peer = new Peer({
 });
 ```
 
-Optionally you may specify a `metadata` property to attach arbitrary data to a node. These metadata will be available to others when asking for information about the node. You may use it, e.g., to store information on services a node offers.
+Optionally you may specify a `metadata` property to attach arbitrary data to a node. These metadata will be available to others when asking for information about the peer. You may use it, e.g., to store information on services a peer offers.
 
 ```javascript
-var peer = new Peer({
+var peer = p2p.peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -43,10 +43,10 @@ var peer = new Peer({
 
 ### Configuring housekeeping
 
-By default, a node tries to do housekeeping around every 30 seconds. If you need to change this, provide a property called `serviceInterval`.
+By default, a peer tries to do housekeeping around every 30 seconds. If you need to change this, provide a property called `serviceInterval`.
 
 ```javascript
-var peer = new Peer({
+var peer = p2p.peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',

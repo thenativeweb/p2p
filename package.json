@@ -16,7 +16,7 @@
       "email": "mail@michael-scherer.net"
     }
   ],
-  "main": "lib/Peer.js",
+  "main": "lib/p2p.js",
   "dependencies": {
     "body-parser": "1.13.1",
     "defekt": "0.0.2",
@@ -34,6 +34,7 @@
     "freeport": "1.0.5",
     "grunt": "0.4.5",
     "nock": "2.6.0",
+    "supertest": "1.0.1",
     "tourism": "0.19.0"
   },
   "repository": {
