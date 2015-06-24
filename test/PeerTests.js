@@ -529,22 +529,22 @@ suite('Peer', function () {
       });
     });
 
-    suite('getNodeFor', function () {
+    suite('getPeerFor', function () {
       test('is a function.', function (done) {
-        assert.that(peer.getNodeFor).is.ofType('function');
+        assert.that(peer.getPeerFor).is.ofType('function');
         done();
       });
 
       test('throws an error if value is missing.', function (done) {
         assert.that(function () {
-          peer.getNodeFor();
+          peer.getPeerFor();
         }).is.throwing('Value is missing.');
         done();
       });
 
       test('throws an error if callback is missing.', function (done) {
         assert.that(function () {
-          peer.getNodeFor('foo');
+          peer.getPeerFor('foo');
         }).is.throwing('Callback is missing.');
         done();
       });
@@ -562,7 +562,7 @@ suite('Peer', function () {
           post('/metadata').
           reply(200, { foo: 'bar' });
 
-        peer.getNodeFor('foo', function (err, node, metadata) {
+        peer.getPeerFor('foo', function (err, node, metadata) {
           assert.that(err).is.null();
           assert.that(node).is.equalTo({
             host: 'example.com',
@@ -583,7 +583,7 @@ suite('Peer', function () {
           post('/find-successor', { id: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }).
           reply(500);
 
-        peer.getNodeFor('foo', function (err) {
+        peer.getPeerFor('foo', function (err) {
           assert.that(err).is.not.null();
           assert.that(scope.isDone()).is.true();
           done();

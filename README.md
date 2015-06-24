@@ -77,21 +77,21 @@ console.log(peer.status());
 // => 'lonely' or 'unbalanced' or 'joined'
 ```
 
-### Finding the responsible node
+### Finding the responsible peer
 
-If you want to find the node responsible for a value, call the `getNodeFor` function and provide the value as a string.
+If you want to find the peer responsible for a value, call the `getPeerFor` function and provide the value as a string.
 
-As a result you will get information on the node itself as well as its metadata. If no metadata have been set, an empty object is returned.
+As a result you will get information on the peer itself as well as its metadata. If no metadata have been set, an empty object is returned.
 
 ```javascript
-peer.getNodeFor('foobar', function (err, node, metadata) {
+peer.getPeerFor('foobar', function (err, node, metadata) {
   // ...
 });
 ```
 
 ### Detecting changes in your neighborhood
 
-To detect whether the successor or predecessor of a node changed, subscribe to the `changed-successor` and `changed-predecessor` events. Please note that the predecessor may be `undefined`.
+To detect whether the successor or predecessor of a peer changed, subscribe to the `changed-successor` and `changed-predecessor` events. Please note that the predecessor may be `undefined`.
 
 ```javascript
 peer.on('changed-successor', function (successor) {
