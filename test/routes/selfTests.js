@@ -3,7 +3,6 @@
 var path = require('path');
 
 var assert = require('assertthat'),
-    express = require('express'),
     request = require('supertest'),
     requireAll = require('require-all');
 
@@ -40,12 +39,16 @@ suite('self', function () {
     });
 
     test('returns self.', function (done) {
-      request(express().post('/self', self(peer))).
+      request(peer.app).
         post('/self').
         end(function (err, res) {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
-          assert.that(res.body).is.equalTo(peer.self);
+          assert.that(res.body).is.equalTo({
+            host: 'localhost',
+            port: 3000,
+            id: '12a30e3632a51fdab4fedd07bcc219b433e17343'
+          });
           done();
         });
     });
