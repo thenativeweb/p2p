@@ -12,27 +12,27 @@ suite('Node', function () {
 
   test('throws an error if options are missing.', function (done) {
     assert.that(function () {
-      /*eslint-disable no-new*/
+      /* eslint-disable no-new */
       new Node();
-      /*eslint-enable no-new*/
+      /* eslint-enable no-new */
     }).is.throwing('Options are missing.');
     done();
   });
 
   test('throws an error if host is missing.', function (done) {
     assert.that(function () {
-      /*eslint-disable no-new*/
+      /* eslint-disable no-new */
       new Node({ port: 3000 });
-      /*eslint-enable no-new*/
+      /* eslint-enable no-new */
     }).is.throwing('Host is missing.');
     done();
   });
 
   test('throws an error if port is missing.', function (done) {
     assert.that(function () {
-      /*eslint-disable no-new*/
+      /* eslint-disable no-new */
       new Node({ host: 'localhost' });
-      /*eslint-enable no-new*/
+      /* eslint-enable no-new */
     }).is.throwing('Port is missing.');
     done();
   });

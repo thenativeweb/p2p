@@ -27,9 +27,9 @@ request.post(url.format({
 }, function (err, res) {
   if (err || (res.statusCode !== 200)) {
     logger.fatal('Failed to send job.', err);
-    /*eslint-disable no-process-exit*/
+    /* eslint-disable no-process-exit */
     process.exit(1);
-    /*eslint-enable no-process-exit*/
+    /* eslint-enable no-process-exit */
   }
 
   logger.info('Sent job {{job.id}} to {{target.host}}:{{target.port}}.', {

@@ -18,31 +18,31 @@ suite('Peer', function () {
 
   test('throws an error if options are missing.', function (done) {
     assert.that(function () {
-      /*eslint-disable no-new*/
+      /* eslint-disable no-new */
       new Peer();
-      /*eslint-enable no-new*/
+      /* eslint-enable no-new */
     }).is.throwing('Options are missing.');
     done();
   });
 
   test('throws an error if the host is missing.', function (done) {
     assert.that(function () {
-      /*eslint-disable no-new*/
+      /* eslint-disable no-new */
       new Peer({
         port: 3000
       });
-      /*eslint-enable no-new*/
+      /* eslint-enable no-new */
     }).is.throwing('Host is missing.');
     done();
   });
 
   test('throws an error if the port is missing.', function (done) {
     assert.that(function () {
-      /*eslint-disable no-new*/
+      /* eslint-disable no-new */
       new Peer({
         host: 'localhost'
       });
-      /*eslint-enable no-new*/
+      /* eslint-enable no-new */
     }).is.throwing('Port is missing.');
     done();
   });

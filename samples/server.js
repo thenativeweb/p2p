@@ -23,9 +23,9 @@ var app,
     logger = flaschenpost.getLogger(),
     peer;
 
-/*eslint-disable no-process-env*/
+/* eslint-disable no-process-env */
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-/*eslint-enable no-process-env*/
+/* eslint-enable no-process-env */
 
 peer = p2p.peer({
   host: 'localhost',
@@ -63,9 +63,9 @@ peer.handle.process = function (payload, done) {
 peer.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
   if (errJoin) {
     logger.fatal('Failed to join.', errJoin);
-    /*eslint-disable no-process-exit*/
+    /* eslint-disable no-process-exit */
     process.exit(1);
-    /*eslint-enable no-process-exit*/
+    /* eslint-enable no-process-exit */
   }
 
   app = express();
