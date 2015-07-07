@@ -1,0 +1,5 @@
+.git/
+coverage/
+doc/
+node_modules/
+samples/

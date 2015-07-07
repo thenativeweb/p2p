@@ -77,7 +77,11 @@ suite('remote', function () {
     });
 
     test('returns an error if the target is not reachable.', function (done) {
-      remote('localhorst', 3000).run('rpc', function (err) {
+      // Increase timeout to make this test work even when on slow networks
+      // (such as hotels' wireless networks).
+      this.timeout(10 * 1000);
+
+      remote('non-existent.local', 3000).run('rpc', function (err) {
         assert.that(err).is.not.null();
         done();
       });
