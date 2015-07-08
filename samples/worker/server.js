@@ -9,15 +9,15 @@ var bodyParser = require('body-parser'),
     flaschenpost = require('flaschenpost'),
     processEnv = require('processenv');
 
-var p2p = require('../lib/p2p');
+var p2p = require('../../lib/p2p');
 
 var httpPort = processEnv('HTTP_PORT') || 3000,
     p2pPort = processEnv('P2P_PORT') || httpPort + 1,
     p2pPortJoin = processEnv('P2P_PORT_JOIN') || 3001,
     serviceInterval = processEnv('SERVICE_INTERVAL') || '1s';
 
-var certificate = fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
-    privateKey = fs.readFileSync(path.join(__dirname, '..', 'keys', 'localhost.selfsigned', 'privateKey.pem'));
+var certificate = fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
+    privateKey = fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'privateKey.pem'));
 
 var app,
     logger = flaschenpost.getLogger(),

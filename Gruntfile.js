@@ -12,6 +12,12 @@ module.exports = tourism({
     }
   },
   test: {
-    server: [ 'test/**/*.js' ]
+    server: [ 'test/**/*Tests.js' ]
+  },
+  shell: {
+    integration: [
+      'docker build -t thenativeweb/p2p-test .',
+      'mocha --async-only --bail --colors --recursive --reporter spec --ui tdd integration'
+    ].join(' && ')
   }
 });

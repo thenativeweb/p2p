@@ -1,5 +1,6 @@
 .git/
 coverage/
 doc/
+integration/
 node_modules/
-samples/
+test/

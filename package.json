@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "assertthat": "0.6.0",
-    "crew": "0.7.2",
+    "crew": "0.7.3",
     "freeport": "1.0.5",
     "grunt": "0.4.5",
     "nock": "2.7.0",

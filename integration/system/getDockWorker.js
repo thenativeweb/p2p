@@ -35,19 +35,8 @@ var getDockWorker = function (callback) {
         return callback(errPing);
       }
 
-      dockWorker.buildImage({
-        directory: path.join(__dirname, '..', '..', '..'),
-        dockerfile: path.join(__dirname, '..', 'p2p-test', 'Dockerfile'),
-        dockerignore: path.join(__dirname, '..', 'p2p-test', '_dockerignore'),
-        name: 'thenativeweb/p2p-test'
-      }, function (errBuildImage) {
-        if (errBuildImage) {
-          return callback(errBuildImage);
-        }
-
-        instance = dockWorker;
-        return callback(null, instance);
-      });
+      instance = dockWorker;
+      return callback(null, instance);
     });
   });
 };
