@@ -92,7 +92,13 @@ Application.prototype.join = function (target, callback) {
       return callback(errGetDockWorker);
     }
 
-    remote(dockWorker.options.host, that.port).run('join', target, callback);
+    remote(dockWorker.options.host, target.port).run('self', function (errTargetSelf, targetSelf) {
+      if (errTargetSelf) {
+        return callback(errTargetSelf);
+      }
+
+      remote(dockWorker.options.host, that.port).run('join', targetSelf, callback);      
+    });
   });
 };
 
