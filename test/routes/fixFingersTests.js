@@ -73,7 +73,7 @@ suite('fixFingers', function () {
             host: 'localhost',
             port: 4000,
             id: 'dc4f424bb575238275aac70b0324ca3a77d5b3dd'
-          })
+          });
           assert.that(remotePeerFindSuccessor.isDone()).is.true();
           done();
         });
