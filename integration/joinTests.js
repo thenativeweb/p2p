@@ -19,7 +19,7 @@ suite('join', function () {
         assert.that(errJoin).is.null();
 
         setTimeout(function () {
-          peers[0].predecessor(function (errPredecessor1, predecessor1) {
+          peers[0].predecessor(function (errPredecessor1) {
             assert.that(errPredecessor1).is.null();
 
             env.stop(peers, function (errStop) {

@@ -37,7 +37,7 @@
     "grunt": "0.4.5",
     "nock": "2.7.0",
     "supertest": "1.0.1",
-    "tourism": "0.20.1"
+    "tourism": "0.20.2"
   },
   "repository": {
     "type": "git",
