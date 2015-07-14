@@ -7,7 +7,7 @@ var assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var fingersFor3000 = require('./fingersFor3000.json'),
+var fingersFor3000 = require('./data/fingersFor3000.json'),
     fixFingers = require('../../lib/routes/fixFingers'),
     Node = require('../../lib/Node');
 
