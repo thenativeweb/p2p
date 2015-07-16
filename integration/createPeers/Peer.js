@@ -1,5 +1,7 @@
 'use strict';
 
+var knock = require('knockat');
+
 var getDockWorker = require('./getDockWorker'),
     getId = require('../../lib/getId'),
     remote = require('../../lib/remote');
@@ -41,9 +43,7 @@ Application.prototype.start = function (callback) {
       that.containerName = containerName;
       that.id = getId(dockWorker.options.host + ':' + that.port);
 
-      setTimeout(function () {
-        callback(null);
-      }, 1 * 1000);
+      knock.at(dockWorker.options.host, that.port, callback);
     });
   });
 };
