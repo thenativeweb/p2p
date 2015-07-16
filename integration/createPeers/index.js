@@ -1,9 +1,13 @@
 'use strict';
 
-var async = require('async');
+var path = require('path');
 
-var createPeer = require('./createPeer'),
-    env = require('./env');
+var async = require('async'),
+    requireAll = require('require-all');
+
+var createPeer = require('./createPeer');
+
+var env = requireAll(path.join(__dirname, 'env'));
 
 var createPeers = function (options, callback) {
   async.times(options.count, function (n, next) {

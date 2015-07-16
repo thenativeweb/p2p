@@ -37,6 +37,7 @@
     "freeport": "1.0.5",
     "grunt": "0.4.5",
     "knockat": "0.2.1",
+    "lodash": "3.10.0",
     "nock": "2.7.0",
     "supertest": "1.0.1",
     "tourism": "0.20.2"

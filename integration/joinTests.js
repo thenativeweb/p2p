@@ -20,13 +20,105 @@ suite('join', function () {
           env.waitUntil(peers).have('status').equalTo({ status: 'lonely' }, callback);
         },
         function (callback) {
-          peers[0].join(peers[1], callback);
+          env.formRing(peers, callback);
         },
         function (callback) {
           env.waitUntil(peers).have('status').equalTo({ status: 'joined' }, callback);
         },
         function (callback) {
-          peers[0].predecessor(callback);
+          env.isRing(peers, callback);
+        },
+        function (callback) {
+          env.stop(peers, callback);
+        }
+      ], done);
+    });
+  });
+
+  test('connects 3 peers.', function (done) {
+    createPeers({ count: 3 }, function (err, peers, env) {
+      assert.that(err).is.null();
+      async.series([
+        function (callback) {
+          env.waitUntil(peers).have('status').equalTo({ status: 'lonely' }, callback);
+        },
+        function (callback) {
+          env.formRing(peers, callback);
+        },
+        function (callback) {
+          env.waitUntil(peers).have('status').equalTo({ status: 'joined' }, callback);
+        },
+        function (callback) {
+          env.isRing(peers, callback);
+        },
+        function (callback) {
+          env.stop(peers, callback);
+        }
+      ], done);
+    });
+  });
+
+  test('connects 5 peers.', function (done) {
+    createPeers({ count: 5 }, function (err, peers, env) {
+      assert.that(err).is.null();
+      async.series([
+        function (callback) {
+          env.waitUntil(peers).have('status').equalTo({ status: 'lonely' }, callback);
+        },
+        function (callback) {
+          env.formRing(peers, callback);
+        },
+        function (callback) {
+          env.waitUntil(peers).have('status').equalTo({ status: 'joined' }, callback);
+        },
+        function (callback) {
+          env.isRing(peers, callback);
+        },
+        function (callback) {
+          env.stop(peers, callback);
+        }
+      ], done);
+    });
+  });
+
+  test('connects 7 peers.', function (done) {
+    createPeers({ count: 7 }, function (err, peers, env) {
+      assert.that(err).is.null();
+      async.series([
+        function (callback) {
+          env.waitUntil(peers).have('status').equalTo({ status: 'lonely' }, callback);
+        },
+        function (callback) {
+          env.formRing(peers, callback);
+        },
+        function (callback) {
+          env.waitUntil(peers).have('status').equalTo({ status: 'joined' }, callback);
+        },
+        function (callback) {
+          env.isRing(peers, callback);
+        },
+        function (callback) {
+          env.stop(peers, callback);
+        }
+      ], done);
+    });
+  });
+
+  test('connects 11 peers.', function (done) {
+    createPeers({ count: 11 }, function (err, peers, env) {
+      assert.that(err).is.null();
+      async.series([
+        function (callback) {
+          env.waitUntil(peers).have('status').equalTo({ status: 'lonely' }, callback);
+        },
+        function (callback) {
+          env.formRing(peers, callback);
+        },
+        function (callback) {
+          env.waitUntil(peers).have('status').equalTo({ status: 'joined' }, callback);
+        },
+        function (callback) {
+          env.isRing(peers, callback);
         },
         function (callback) {
           env.stop(peers, callback);

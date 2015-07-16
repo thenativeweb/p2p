@@ -137,6 +137,10 @@ This module can be built using [Grunt](http://gruntjs.com/). Besides running the
 
     $ grunt
 
+To run the integration tests setup Docker and run Grunt using the `integration command`.
+
+    $ grunt integration
+
 ## License
 
 The MIT License (MIT)
