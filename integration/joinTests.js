@@ -15,19 +15,25 @@ suite('join', function () {
     createPeers({ count: 2 }, function (errCreatePeers, peers, env) {
       assert.that(errCreatePeers).is.null();
 
-      peers[0].join(peers[1], function (errJoin) {
-        assert.that(errJoin).is.null();
+      env.waitUntil(peers).have('status').equalTo({ status: 'lonely' }, function (errWaitUntil1) {
+        assert.that(errWaitUntil1).is.null();
 
-        setTimeout(function () {
-          peers[0].predecessor(function (errPredecessor1) {
-            assert.that(errPredecessor1).is.null();
+        peers[0].join(peers[1], function (errJoin) {
+          assert.that(errJoin).is.null();
 
-            env.stop(peers, function (errStop) {
-              assert.that(errStop).is.null();
-              done();
+          env.waitUntil(peers).have('status').equalTo({ status: 'joined' }, function (errWaitUntil2) {
+            assert.that(errWaitUntil2).is.null();
+
+            peers[0].predecessor(function (errPredecessor1) {
+              assert.that(errPredecessor1).is.null();
+
+              env.stop(peers, function (errStop) {
+                assert.that(errStop).is.null();
+                done();
+              });
             });
           });
-        }, 5 * 1000);
+        });
       });
     });
   });

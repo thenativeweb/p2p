@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = {
-  stop: require('./stop')
+  stop: require('./stop'),
+  waitUntil: require('./waitUntil')
 };

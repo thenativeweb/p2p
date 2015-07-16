@@ -48,42 +48,6 @@ Application.prototype.start = function (callback) {
   });
 };
 
-Application.prototype.self = function (callback) {
-  var that = this;
-
-  getDockWorker(function (errGetDockWorker, dockWorker) {
-    if (errGetDockWorker) {
-      return callback(errGetDockWorker);
-    }
-
-    remote(dockWorker.options.host, that.port).run('self', callback);
-  });
-};
-
-Application.prototype.predecessor = function (callback) {
-  var that = this;
-
-  getDockWorker(function (errGetDockWorker, dockWorker) {
-    if (errGetDockWorker) {
-      return callback(errGetDockWorker);
-    }
-
-    remote(dockWorker.options.host, that.port).run('predecessor', callback);
-  });
-};
-
-Application.prototype.successor = function (callback) {
-  var that = this;
-
-  getDockWorker(function (errGetDockWorker, dockWorker) {
-    if (errGetDockWorker) {
-      return callback(errGetDockWorker);
-    }
-
-    remote(dockWorker.options.host, that.port).run('successor', callback);
-  });
-};
-
 Application.prototype.join = function (target, callback) {
   var that = this;
 
@@ -119,5 +83,24 @@ Application.prototype.stop = function (callback) {
     });
   });
 };
+
+[
+  'self',
+  'successor',
+  'predecessor',
+  'status'
+].forEach(function (fn) {
+  Application.prototype[fn] = function (callback) {
+    var that = this;
+
+    getDockWorker(function (errGetDockWorker, dockWorker) {
+      if (errGetDockWorker) {
+        return callback(errGetDockWorker);
+      }
+
+      remote(dockWorker.options.host, that.port).run(fn, callback);
+    });
+  };
+});
 
 module.exports = Application;
