@@ -10,8 +10,8 @@ var createPeer = require('./createPeer');
 var env = requireAll(path.join(__dirname, 'env'));
 
 var createPeers = function (options, callback) {
-  async.times(options.count, function (n, next) {
-    createPeer(next);
+  async.timesSeries(options.count, function (n, next) {
+    createPeer(options, next);
   }, function (err, peers) {
     if (err) {
       return callback(err);

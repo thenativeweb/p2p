@@ -4,7 +4,7 @@ var freeport = require('freeport');
 
 var Peer = require('./Peer');
 
-var createPeer = function (callback) {
+var createPeer = function (options, callback) {
   freeport(function (errFreeport, port) {
     var peer;
 
@@ -12,7 +12,10 @@ var createPeer = function (callback) {
       return callback(errFreeport);
     }
 
-    peer = new Peer({ port: port });
+    peer = new Peer({
+      port: port,
+      serviceInterval: options.serviceInterval
+    });
     peer.start(function (errStart) {
       if (errStart) {
         return callback(errStart);

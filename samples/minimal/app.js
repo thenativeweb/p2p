@@ -16,5 +16,5 @@ p2p.peer({
   /* eslint-enable no-process-env */
   privateKey: fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'privateKey.pem')),
   certificate: fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
-  serviceInterval: '1s'
+  serviceInterval: process.env.SERVICE_INTERVAL
 });

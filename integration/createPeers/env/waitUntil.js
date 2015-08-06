@@ -1,9 +1,10 @@
 'use strict';
 
 var async = require('async'),
-    cmp = require('comparejs');
+    cmp = require('comparejs'),
+    parse = require('parse-duration');
 
-var waitUntil = function (peers) {
+var waitUntil = function (peers, options) {
   return {
     have: function (fn) {
       return {
@@ -21,7 +22,9 @@ var waitUntil = function (peers) {
                     return doneUntil(err);
                   }
                   actual = result;
-                  doneUntil(null);
+                  setTimeout(function () {
+                    doneUntil(null);
+                  }, parse(options.interval));
                 });
               },
               doneEach

@@ -11,6 +11,7 @@ var Application = function (options) {
 
   this.id = undefined;
   this.port = options.port;
+  this.serviceInterval = options.serviceInterval;
 };
 
 Application.prototype.start = function (callback) {
@@ -30,7 +31,8 @@ Application.prototype.start = function (callback) {
       name: containerName,
       env: {
         HOST: dockWorker.options.host,
-        PORT: that.port
+        PORT: that.port,
+        SERVICE_INTERVAL: that.serviceInterval
       },
       ports: [
         { container: that.port, host: that.port }
