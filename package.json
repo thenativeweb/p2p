@@ -18,29 +18,30 @@
   ],
   "main": "lib/p2p.js",
   "dependencies": {
-    "body-parser": "1.13.2",
+    "body-parser": "1.13.3",
     "defekt": "0.0.2",
-    "express": "4.13.1",
+    "eventemitter2": "0.4.14",
+    "express": "4.13.3",
     "flaschenpost": "0.8.5",
     "parse-duration": "0.1.1",
     "processenv": "0.1.0",
-    "request": "2.58.0",
+    "request": "2.60.0",
     "require-all": "1.1.0",
     "timer2": "0.2.3",
     "uuidv4": "0.3.1"
   },
   "devDependencies": {
     "assertthat": "0.6.0",
-    "async": "1.3.0",
+    "async": "1.4.0",
     "comparejs": "0.1.2",
-    "crew": "0.7.6",
+    "crew": "0.8.0",
     "freeport": "1.0.5",
     "grunt": "0.4.5",
     "knockat": "0.2.1",
-    "lodash": "3.10.0",
-    "nock": "2.7.0",
+    "lodash": "3.10.1",
+    "nock": "2.10.0",
     "supertest": "1.0.1",
-    "tourism": "0.20.2"
+    "tourism": "0.21.0"
   },
   "repository": {
     "type": "git",

@@ -1,14 +1,13 @@
 'use strict';
 
-var events = require('events');
-
 var assert = require('assertthat'),
+    eventEmitter2 = require('eventemitter2'),
     nock = require('nock');
 
 var getId = require('../lib/getId'),
     Peer = require('../lib/Peer');
 
-var EventEmitter = events.EventEmitter;
+var EventEmitter2 = eventEmitter2.EventEmitter2;
 
 suite('Peer', function () {
   test('is a function.', function (done) {
@@ -53,7 +52,7 @@ suite('Peer', function () {
       port: 3000
     });
 
-    assert.that(peer).is.instanceOf(EventEmitter);
+    assert.that(peer).is.instanceOf(EventEmitter2);
     done();
   });
 
@@ -212,8 +211,8 @@ suite('Peer', function () {
         done();
       });
 
-      test('emits a changed-successor event.', function (done) {
-        peer.once('changed-successor', function (successor) {
+      test('emits a changed::successor event.', function (done) {
+        peer.once('changed::successor', function (successor) {
           assert.that(successor).is.equalTo({
             host: 'example.com',
             port: 3000,
@@ -261,8 +260,8 @@ suite('Peer', function () {
         done();
       });
 
-      test('emits a changed-predecessor event.', function (done) {
-        peer.once('changed-predecessor', function (predecessor) {
+      test('emits a changed::predecessor event.', function (done) {
+        peer.once('changed::predecessor', function (predecessor) {
           assert.that(predecessor).is.equalTo({
             host: 'example.com',
             port: 3000,
@@ -273,8 +272,8 @@ suite('Peer', function () {
         peer.setPredecessor({ host: 'example.com', port: 3000 });
       });
 
-      test('emits a changed-predecessor event when the predecessor is set to undefined.', function (done) {
-        peer.once('changed-predecessor', function (predecessor) {
+      test('emits a changed::predecessor event when the predecessor is set to undefined.', function (done) {
+        peer.once('changed::predecessor', function (predecessor) {
           assert.that(predecessor).is.undefined();
           done();
         });
