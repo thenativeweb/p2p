@@ -20,7 +20,6 @@ var createPeer = function (options, callback) {
       if (errStart) {
         return callback(errStart);
       }
-
       callback(null, peer);
     });
   });

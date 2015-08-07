@@ -1,7 +1,10 @@
 'use strict';
 
 var _ = require('lodash'),
-    async = require('async');
+    async = require('async'),
+    flaschenpost = require('flaschenpost');
+
+var logger = flaschenpost.getLogger();
 
 var isRing = function (peers, callback) {
   var peersWithNeighbours = [];
@@ -19,8 +22,10 @@ var isRing = function (peers, callback) {
     });
   };
 
-  async.each(peers, function (peer, doneEach) {
-    async.parallel({
+  logger.info('Verifying ring...');
+
+  async.eachSeries(peers, function (peer, doneEach) {
+    async.series({
       self: function (done) {
         peer.self(done);
       },

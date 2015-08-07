@@ -13,8 +13,8 @@ p2p.peer({
   /* eslint-disable no-process-env */
   host: process.env.HOST,
   port: process.env.PORT,
-  /* eslint-enable no-process-env */
   privateKey: fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'privateKey.pem')),
   certificate: fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
   serviceInterval: process.env.SERVICE_INTERVAL
+  /* eslint-enable no-process-env */
 });

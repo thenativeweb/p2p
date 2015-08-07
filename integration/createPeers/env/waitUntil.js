@@ -2,13 +2,18 @@
 
 var async = require('async'),
     cmp = require('comparejs'),
+    flaschenpost = require('flaschenpost'),
     parse = require('parse-duration');
+
+var logger = flaschenpost.getLogger();
 
 var waitUntil = function (peers, options) {
   return {
     have: function (fn) {
       return {
         equalTo: function (expected, callback) {
+          logger.info('Waiting for peers to fulfill predicate...', { expected: expected });
+
           async.each(peers, function (peer, doneEach) {
             var actual;
 
