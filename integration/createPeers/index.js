@@ -12,7 +12,7 @@ var env = requireAll(path.join(__dirname, 'env')),
     logger = flaschenpost.getLogger();
 
 var createPeers = function (options, callback) {
-  logger.info('Creating peers...');
+  logger.info('Creating peers...', { count: options.count });
   async.timesSeries(options.count, function (n, next) {
     createPeer(options, next);
   }, function (err, peers) {

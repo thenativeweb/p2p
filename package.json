@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "assertthat": "0.6.0",
-    "async": "1.4.0",
+    "async": "1.4.1",
     "comparejs": "0.1.2",
     "crew": "0.8.0",
     "freeport": "1.0.5",
