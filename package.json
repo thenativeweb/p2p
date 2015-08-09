@@ -27,6 +27,7 @@
     "processenv": "0.1.0",
     "request": "2.60.0",
     "require-all": "1.1.0",
+    "spdy": "1.32.4",
     "timer2": "0.2.3",
     "uuidv4": "0.3.1"
   },

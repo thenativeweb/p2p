@@ -83,7 +83,7 @@ suite('remote', function () {
 
       remote('non-existent.local', 3000).run('rpc', function (err) {
         assert.that(err).is.not.null();
-        assert.that(err.code).is.equalTo('ENOTFOUND');
+        assert.that(err.code).is.equalTo('ECONNRESET');
         done();
       });
     });
