@@ -41,6 +41,65 @@ var peer = p2p.peer({
 });
 ```
 
+### Joining a network
+
+To join a network, provide the host and the port of another peer that you want to join using the `wellKnownPeers` property.
+
+```javascript
+var peer = p2p.peer({
+  host: 'localhost',
+  port: 3000,
+  privateKey: '...',
+  certificate: '...',
+  wellKnownPeers: { host: 'localhost', port: 4000 }
+});
+```
+
+You may also specify multiple peers. This increases the chance to join a network even in case that some peers are down.
+
+```javascript
+var peer = p2p.peer({
+  host: 'localhost',
+  port: 3000,
+  privateKey: '...',
+  certificate: '...',
+  wellKnownPeers: [
+    { host: 'localhost', port: 4000 },
+    { host: 'localhost', port: 5000 },
+    { host: 'localhost', port: 6000 }
+  ]
+});
+```
+
+If the peer leaves the network, e.g. because of a connection error, it automatically tries to rejoin. For that it manages an internal list of peers that it got to know. To retrieve this list run the `wellKnownPeers.get` function.
+
+```javascript
+var wellKnownPeers = peer.wellKnownPeers.get();
+```
+
+You may store this list and re-use it when setting up a peer from scratch for the next time.
+
+To get the status of a peer call its `status` function.
+
+```javascript
+console.log(peer.status());
+// => 'lonely' or 'unbalanced' or 'joined'
+```
+
+Additionally, you may subscribe to the `status::*` event to get notified whenever the status of a peer changes.
+
+```javascript
+peer.on('status::*', function (status) {
+  console.log(status);
+  // => {
+  //      from: 'lonely',
+  //      to: 'unbalanced'
+  //    }
+});
+```
+
+If you are interested in entering a specific status, you may also subscribe to the more specialized events `status::lonely`, `status::unbalanced` and `status::joined`.
+
 ### Configuring housekeeping
 
 By default, a peer tries to do housekeeping around every 30 seconds. If you need to change this, provide a property called `serviceInterval`.
@@ -51,53 +110,12 @@ var peer = p2p.peer({
   port: 3000,
   privateKey: '...',
   certificate: '...',
+  wellKnownPeers: [ ... ],
   serviceInterval: '10s'
 });
 ```
 
 Please note that this affects the way the protocol works. Hence setting the `serviceInterval` property should be avoided in most cases.
-
-### Joining a p2p network
-
-To join another peer, call the `join` function and provide the host and the port of the peer you want to join.
-
-```javascript
-peer.join({
-  peer: { host: 'localhost', port: 4000 }
-}, function (err) {
-  // ...
-});
-```
-
-Alternatively, if you want to specify multiple peers, provide an array using the `peers` property. In this case `join` will iterate through the array and try to join one peer after another until it succeeds.
-
-```javascript
-peer.join({
-  peers: [
-    { host: 'localhost', port: 4000 },
-    { host: 'localhost', port: 5000 },
-    { host: 'localhost', port: 6000 }
-  ]
-}, function (err) {
-  // ...
-});
-```
-
-To get the status of a peer call its `status` function.
-
-```javascript
-console.log(peer.status());
-// => 'lonely' or 'unbalanced' or 'joined'
-```
-
-Additionally, you may subscribe to the `status` event to get notified whenever the status of a peer changes.
-
-```javascript
-peer.on('status', function (status) {
-  console.log(status);
-  // => 'lonely' or 'unbalanced' or 'joined'  
-});
-```
 
 ### Finding the responsible peer
 

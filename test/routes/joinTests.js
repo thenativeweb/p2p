@@ -90,6 +90,48 @@ suite('join', function () {
         });
     });
 
+    test('does nothing if the peer is unbalanced.', function (done) {
+      var findSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
+
+      peer = new mocks.UnbalancedPeerWithoutPredecessor({
+        host: 'localhost',
+        port: 3000
+      });
+
+      request(peer.app).
+        post('/join').
+        set('content-type', 'application/json').
+        send({ host: 'localhost', port: 3000 }).
+        end(function (err, res) {
+          assert.that(err).is.null();
+          assert.that(res.statusCode).is.equalTo(200);
+          assert.that(findSuccessor.isDone()).is.false();
+          nock.cleanAll();
+          done();
+        });
+    });
+
+    test('does nothing if the peer is joined.', function (done) {
+      var findSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
+
+      peer = new mocks.JoinedPeer({
+        host: 'localhost',
+        port: 3000
+      });
+
+      request(peer.app).
+        post('/join').
+        set('content-type', 'application/json').
+        send({ host: 'localhost', port: 3000 }).
+        end(function (err, res) {
+          assert.that(err).is.null();
+          assert.that(res.statusCode).is.equalTo(200);
+          assert.that(findSuccessor.isDone()).is.false();
+          nock.cleanAll();
+          done();
+        });
+    });
+
     test('asks the remote peer for the local peer\'s successor.', function (done) {
       var remotePeer = new mocks.LonelyPeer({ host: 'localhost', port: 4000 });
       var remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(200, remotePeer.self);

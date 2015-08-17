@@ -209,5 +209,42 @@ suite('findSuccessor', function () {
           done();
         });
     });
+
+    test('adds the successor to the list of well-known peers.', function (done) {
+      // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
+      // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
+      // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
+      //
+      // - ID: f424bb575238275aac70b0324ca3a77d5b3dddc4
+
+      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Node({
+        host: 'localhost',
+        port: 2000
+      }));
+      var remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Node({
+        host: 'localhost',
+        port: 6000
+      }));
+
+      assert.that(peer.wellKnownPeers.get()).is.equalTo([
+        { host: 'localhost', port: 3000 }
+      ]);
+
+      request(peer.app).
+        post('/find-successor').
+        set('content-type', 'application/json').
+        send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
+        end(function (err, res) {
+          assert.that(err).is.null();
+          assert.that(res.statusCode).is.equalTo(200);
+          assert.that(peer.wellKnownPeers.get()).is.equalTo([
+            { host: 'localhost', port: 3000 },
+            { host: 'localhost', port: 6000 }
+          ]);
+          assert.that(remotePeerFindPredecessor.isDone()).is.true();
+          assert.that(remotePeerSuccessor.isDone()).is.true();
+          done();
+        });
+    });
   });
 });
