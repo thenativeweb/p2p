@@ -59,18 +59,31 @@ Please note that this affects the way the protocol works. Hence setting the `ser
 
 ### Joining a p2p network
 
-To join another node, call the `join` function and provide the host and the port of the node you want to join.
+To join another peer, call the `join` function and provide the host and the port of the peer you want to join.
 
 ```javascript
 peer.join({
-  host: 'localhost',
-  port: 4000
+  peer: { host: 'localhost', port: 4000 }
 }, function (err) {
   // ...
 });
 ```
 
-To get the status of a node call its `status` function.
+Alternatively, if you want to specify multiple peers, provide an array using the `peers` property. In this case `join` will iterate through the array and try to join one peer after another until it succeeds.
+
+```javascript
+peer.join({
+  peers: [
+    { host: 'localhost', port: 4000 },
+    { host: 'localhost', port: 5000 },
+    { host: 'localhost', port: 6000 }
+  ]
+}, function (err) {
+  // ...
+});
+```
+
+To get the status of a peer call its `status` function.
 
 ```javascript
 console.log(peer.status());

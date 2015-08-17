@@ -418,23 +418,18 @@ suite('Peer', function () {
         done();
       });
 
-      test('throws an error if the host is missing.', function (done) {
+      test('throws an error if peers are missing.', function (done) {
         assert.that(function () {
-          peer.join({ port: 3000 });
-        }).is.throwing('Host is missing.');
-        done();
-      });
-
-      test('throws an error if the port is missing.', function (done) {
-        assert.that(function () {
-          peer.join({ host: 'localhost' });
-        }).is.throwing('Port is missing.');
+          peer.join({});
+        }).is.throwing('Peers are missing.');
         done();
       });
 
       test('throws an error if the callback is missing.', function (done) {
         assert.that(function () {
-          peer.join({ host: 'localhost', port: 3000 });
+          peer.join({
+            peers: { host: 'localhost', port: 3000 }
+          });
         }).is.throwing('Callback is missing.');
         done();
       });
@@ -444,7 +439,25 @@ suite('Peer', function () {
           post('/join', { host: 'example.com', port: 3000 }).
           reply(200);
 
-        peer.join({ host: 'example.com', port: 3000 }, function (err) {
+        peer.join({
+          peer: { host: 'example.com', port: 3000 }
+        }, function (err) {
+          assert.that(err).is.null();
+          assert.that(scope.isDone()).is.true();
+          done();
+        });
+      });
+
+      test('calls join with the given node if it is specified using an array.', function (done) {
+        var scope = nock('https://localhost:3000').
+          post('/join', { host: 'example.com', port: 3000 }).
+          reply(200);
+
+        peer.join({
+          peers: [
+            { host: 'example.com', port: 3000 }
+          ]
+        }, function (err) {
           assert.that(err).is.null();
           assert.that(scope.isDone()).is.true();
           done();
@@ -456,10 +469,51 @@ suite('Peer', function () {
           post('/join', { host: 'example.com', port: 3000 }).
           reply(500);
 
-        peer.join({ host: 'example.com', port: 3000 }, function (err) {
+        peer.join({
+          peer: { host: 'example.com', port: 3000 }
+        }, function (err) {
           assert.that(err).is.not.null();
           assert.that(err.message).is.equalTo('Failed to join.');
           assert.that(scope.isDone()).is.true();
+          done();
+        });
+      });
+
+      test('returns an error if the join fails and the peer is specified as an array.', function (done) {
+        var scope = nock('https://localhost:3000').
+          post('/join', { host: 'example.com', port: 3000 }).
+          reply(500);
+
+        peer.join({
+          peers: [
+            { host: 'example.com', port: 3000 }
+          ]
+        }, function (err) {
+          assert.that(err).is.not.null();
+          assert.that(err.message).is.equalTo('Failed to join.');
+          assert.that(scope.isDone()).is.true();
+          done();
+        });
+      });
+
+      test('calls join with the second node if joining the first node fails.', function (done) {
+        var scopeFirst = nock('https://localhost:3000').
+          post('/join', { host: 'example.com', port: 3000 }).
+          reply(500);
+
+        var scopeSecond = nock('https://localhost:3000').
+          post('/join', { host: 'example.com', port: 4000 }).
+          reply(200);
+
+        peer.join({
+          peers: [
+            { host: 'example.com', port: 3000 },
+            { host: 'example.com', port: 4000 }
+          ]
+        }, function (err) {
+          assert.that(err).is.null();
+          assert.that(scopeFirst.isDone()).is.true();
+          assert.that(scopeSecond.isDone()).is.true();
           done();
         });
       });
