@@ -60,7 +60,9 @@ peer.handle.process = function (payload, done) {
   });
 };
 
-peer.join({ host: 'localhost', port: p2pPortJoin }, function (errJoin) {
+peer.join({
+  peer: { host: 'localhost', port: p2pPortJoin }
+}, function (errJoin) {
   if (errJoin) {
     logger.fatal('Failed to join.', errJoin);
     /* eslint-disable no-process-exit */
