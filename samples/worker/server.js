@@ -39,17 +39,21 @@ peer = p2p.peer({
   serviceInterval: serviceInterval
 });
 
-peer.on('changed-successor', function (successor) {
-  logger.info('Changed successor.', {
-    successor: successor,
-    status: peer.status()
+peer.on('status', function (status) {
+  logger.info('Changed status.', {
+    status: status
   });
 });
 
-peer.on('changed-predecessor', function (predecessor) {
+peer.on('environment::successor', function (successor) {
+  logger.info('Changed successor.', {
+    successor: successor
+  });
+});
+
+peer.on('environment::predecessor', function (predecessor) {
   logger.info('Changed predecessor.', {
-    predecessor: predecessor,
-    status: peer.status()
+    predecessor: predecessor
   });
 });
 

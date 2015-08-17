@@ -90,6 +90,15 @@ console.log(peer.status());
 // => 'lonely' or 'unbalanced' or 'joined'
 ```
 
+Additionally, you may subscribe to the `status` event to get notified whenever the status of a peer changes.
+
+```javascript
+peer.on('status', function (status) {
+  console.log(status);
+  // => 'lonely' or 'unbalanced' or 'joined'  
+});
+```
+
 ### Finding the responsible peer
 
 If you want to find the peer responsible for a value, call the `getPeerFor` function and provide the value as a string.
@@ -104,22 +113,22 @@ peer.getPeerFor('foobar', function (err, node, metadata) {
 
 ### Detecting changes in your neighborhood
 
-To detect whether the successor or predecessor of a peer changed, subscribe to the `changed::successor` and `changed::predecessor` events. Please note that the predecessor may be `undefined`.
+To detect whether the successor or predecessor of a peer changed, subscribe to the `environment::successor` and `environment::predecessor` events. Please note that the predecessor may be `undefined`.
 
 ```javascript
-peer.on('changed::successor', function (successor) {
+peer.on('environment::successor', function (successor) {
   // ...
 });
 
-peer.on('changed::predecessor', function (predecessor) {
+peer.on('environment::predecessor', function (predecessor) {
   // ...
 });
 ```
 
-Please note that you can also subscribe to any changes using a wildcard.
+Please note that you can also subscribe to any environmental changes using a wildcard.
 
 ```javascript
-peer.on('changed::*', function (successorOrPredecessor) {
+peer.on('environment::*', function (successorOrPredecessor) {
   // ...
 });
 ```

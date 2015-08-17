@@ -211,8 +211,8 @@ suite('Peer', function () {
         done();
       });
 
-      test('emits a changed::successor event.', function (done) {
-        peer.once('changed::successor', function (successor) {
+      test('emits an environment::successor event.', function (done) {
+        peer.once('environment::successor', function (successor) {
           assert.that(successor).is.equalTo({
             host: 'example.com',
             port: 3000,
@@ -221,6 +221,30 @@ suite('Peer', function () {
           done();
         });
         peer.setSuccessor({ host: 'example.com', port: 3000 });
+      });
+
+      test('emits a status event.', function (done) {
+        peer.once('status', function (status) {
+          assert.that(status).is.equalTo('unbalanced');
+          done();
+        });
+        peer.setSuccessor({ host: 'example.com', port: 3000 });
+      });
+
+      test('only emits a status event if the status did actually change.', function (done) {
+        var counter = 0;
+
+        peer.on('status', function () {
+          counter++;
+        });
+        peer.setSuccessor({ host: 'example.com', port: 3000 });
+        peer.setSuccessor({ host: 'example.com', port: 4000 });
+
+        setTimeout(function () {
+          assert.that(counter).is.equalTo(1);
+          peer.removeAllListeners();
+          done();
+        }, 0.5 * 1000);
       });
     });
 
@@ -260,8 +284,8 @@ suite('Peer', function () {
         done();
       });
 
-      test('emits a changed::predecessor event.', function (done) {
-        peer.once('changed::predecessor', function (predecessor) {
+      test('emits an environment::predecessor event.', function (done) {
+        peer.once('environment::predecessor', function (predecessor) {
           assert.that(predecessor).is.equalTo({
             host: 'example.com',
             port: 3000,
@@ -272,12 +296,36 @@ suite('Peer', function () {
         peer.setPredecessor({ host: 'example.com', port: 3000 });
       });
 
-      test('emits a changed::predecessor event when the predecessor is set to undefined.', function (done) {
-        peer.once('changed::predecessor', function (predecessor) {
+      test('emits a environment::predecessor event when the predecessor is set to undefined.', function (done) {
+        peer.once('environment::predecessor', function (predecessor) {
           assert.that(predecessor).is.undefined();
           done();
         });
         peer.setPredecessor();
+      });
+
+      test('emits a status event.', function (done) {
+        peer.once('status', function (status) {
+          assert.that(status).is.equalTo('unbalanced');
+          done();
+        });
+        peer.setPredecessor({ host: 'example.com', port: 3000 });
+      });
+
+      test('only emits a status event if the status did actually change.', function (done) {
+        var counter = 0;
+
+        peer.on('status', function () {
+          counter++;
+        });
+        peer.setPredecessor({ host: 'example.com', port: 3000 });
+        peer.setPredecessor({ host: 'example.com', port: 4000 });
+
+        setTimeout(function () {
+          assert.that(counter).is.equalTo(1);
+          peer.removeAllListeners();
+          done();
+        }, 0.5 * 1000);
       });
     });
 
