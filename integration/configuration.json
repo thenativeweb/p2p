@@ -2,7 +2,7 @@
   "serviceInterval": "5s",
   "ringSizes": {
     "algorithm": "fibonacci",
-    "iterations": 5
+    "iterations": 3
   },
   "timeout": "60m"
 }
