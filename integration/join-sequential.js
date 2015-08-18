@@ -16,22 +16,23 @@ runTest(__filename, function (configuration) {
         },
         function (callback) {
           var peersJoined = [];
-          async.eachSeries(peers, function (peer, callback) {
+
+          async.eachSeries(peers, function (peer, callbackEachSeries) {
             peersJoined.push(peer);
             if (peersJoined.length === 1) {
-              return callback(null);
+              return callbackEachSeries(null);
             }
             async.series([
-              function (callback) {
-                peer.join(peersJoined[0], callback);
+              function (callbackSeries) {
+                peer.join(peersJoined[0], callbackSeries);
               },
-              function (callback) {
-                env.waitUntil(peersJoined, { interval: configuration.serviceInterval }).have('status').equalTo({ status: 'joined' }, callback);
+              function (callbackSeries) {
+                env.waitUntil(peersJoined, { interval: configuration.serviceInterval }).have('status').equalTo({ status: 'joined' }, callbackSeries);
               },
-              function (callback) {
-                env.isRing(peersJoined, callback);
+              function (callbackSeries) {
+                env.isRing(peersJoined, callbackSeries);
               }
-            ], callback);
+            ], callbackEachSeries);
           }, callback);
         },
         function (callback) {
