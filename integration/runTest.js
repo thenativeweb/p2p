@@ -4,12 +4,15 @@ var path = require('path');
 
 var parse = require('parse-duration');
 
-var configuration = require('./configuration.json');
+var algorithms = require('./algorithms'),
+    configuration = require('./configuration.json');
 
 var runTest = function (testName, callback) {
+  var ringSizes = algorithms[configuration.ringSizes.algorithm](configuration.ringSizes.iterations);
+
   testName = path.basename(testName, '.js');
 
-  configuration.ringSizes.forEach(function (ringSize) {
+  ringSizes.forEach(function (ringSize) {
     var individualConfiguration = {
       serviceInterval: configuration.serviceInterval,
       ringSize: ringSize,
