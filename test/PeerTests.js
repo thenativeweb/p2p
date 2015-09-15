@@ -2,10 +2,10 @@
 
 var assert = require('assertthat'),
     eventEmitter2 = require('eventemitter2'),
-    nock = require('nock');
+    nock = require('nock'),
+    sha1 = require('sha1');
 
-var getId = require('../lib/getId'),
-    Peer = require('../lib/Peer');
+var Peer = require('../lib/Peer');
 
 var EventEmitter2 = eventEmitter2.EventEmitter2;
 
@@ -83,7 +83,7 @@ suite('Peer', function () {
         assert.that(peer.self).is.equalTo({
           host: 'localhost',
           port: 3000,
-          id: getId('localhost:3000')
+          id: sha1('localhost:3000')
         });
         done();
       });
@@ -101,7 +101,7 @@ suite('Peer', function () {
         assert.that(peer.successor).is.equalTo({
           host: 'localhost',
           port: 3000,
-          id: getId('localhost:3000')
+          id: sha1('localhost:3000')
         });
         done();
       });
@@ -112,7 +112,7 @@ suite('Peer', function () {
         assert.that(peer.predecessor).is.equalTo({
           host: 'localhost',
           port: 3000,
-          id: getId('localhost:3000')
+          id: sha1('localhost:3000')
         });
         done();
       });
@@ -512,7 +512,7 @@ suite('Peer', function () {
           reply(200, {
             host: 'example.com',
             port: 3000,
-            id: getId('example.com:3000')
+            id: sha1('example.com:3000')
           });
 
         var scopeMetadata = nock('https://example.com:3000').
@@ -524,7 +524,7 @@ suite('Peer', function () {
           assert.that(endpoint).is.equalTo({
             host: 'example.com',
             port: 3000,
-            id: getId('example.com:3000')
+            id: sha1('example.com:3000')
           });
           assert.that(metadata).is.equalTo({
             foo: 'bar'

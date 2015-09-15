@@ -29,6 +29,7 @@
     "random-int": "1.0.0",
     "request": "2.62.0",
     "require-all": "1.1.0",
+    "sha1": "1.1.1",
     "string.prototype.padleft": "1.0.0",
     "timer2": "0.2.3",
     "uuidv4": "0.3.1"
