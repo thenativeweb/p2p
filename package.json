@@ -26,9 +26,8 @@
     "lodash": "3.10.1",
     "parse-duration": "0.1.1",
     "processenv": "0.1.0",
-    "request": "2.60.0",
+    "request": "2.61.0",
     "require-all": "1.1.0",
-    "spdy": "1.32.4",
     "timer2": "0.2.3",
     "uuidv4": "0.3.1"
   },
@@ -40,8 +39,8 @@
     "freeport": "1.0.5",
     "grunt": "0.4.5",
     "knockat": "0.2.1",
-    "nock": "2.10.0",
-    "supertest": "1.0.1",
+    "nock": "2.11.0",
+    "supertest": "1.1.0",
     "tourism": "0.21.0"
   },
   "repository": {

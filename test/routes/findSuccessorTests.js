@@ -45,7 +45,7 @@ suite('findSuccessor', function () {
         post('/find-successor').
         set('content-type', 'application/json').
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
@@ -57,7 +57,7 @@ suite('findSuccessor', function () {
         set('content-type', 'application/json').
         send({}).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
@@ -123,7 +123,7 @@ suite('findSuccessor', function () {
         set('content-type', 'application/json').
         send({ id: '12a30e3632a51fdab4fedd07bcc219b433e17343' }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           done();
         });
@@ -143,7 +143,7 @@ suite('findSuccessor', function () {
         set('content-type', 'application/json').
         send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerFindPredecessor.isDone()).is.true();
           done();
@@ -168,7 +168,7 @@ suite('findSuccessor', function () {
         set('content-type', 'application/json').
         send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerFindPredecessor.isDone()).is.true();
           assert.that(remotePeerSuccessor.isDone()).is.true();

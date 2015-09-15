@@ -47,7 +47,7 @@ suite('fixFingers', function () {
       request(peer.app).
         post('/fix-fingers').
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(peer.fingers.length).is.equalTo(0);
           assert.that(remotePeerFindSuccessor.isDone()).is.true();

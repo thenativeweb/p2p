@@ -44,7 +44,7 @@ suite('closestPrecedingFinger', function () {
         post('/closest-preceding-finger').
         set('content-type', 'application/json').
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
@@ -56,7 +56,7 @@ suite('closestPrecedingFinger', function () {
         set('content-type', 'application/json').
         send({}).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });

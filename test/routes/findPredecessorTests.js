@@ -44,7 +44,7 @@ suite('findPredecessor', function () {
         post('/find-predecessor').
         set('content-type', 'application/json').
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
@@ -56,7 +56,7 @@ suite('findPredecessor', function () {
         set('content-type', 'application/json').
         send({}).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
@@ -76,7 +76,7 @@ suite('findPredecessor', function () {
         set('content-type', 'application/json').
         send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerSuccessor.isDone()).is.true();
           done();
@@ -151,7 +151,7 @@ suite('findPredecessor', function () {
         set('content-type', 'application/json').
         send({ id: '12a30e3632a51fdab4fedd07bcc219b433e17343' }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerSuccessor.isDone()).is.true();
           done();
@@ -173,7 +173,7 @@ suite('findPredecessor', function () {
         set('content-type', 'application/json').
         send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerSuccessor.isDone()).is.true();
           assert.that(remotePeerClosestPrecedingFinger.isDone()).is.true();

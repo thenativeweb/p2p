@@ -42,7 +42,7 @@ suite('handle', function () {
       request(peer.app).
         post('/handle/non-existent').
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(404);
           done();
         });
@@ -135,7 +135,7 @@ suite('handle', function () {
       request(peer.app).
         post('/handle/foo').
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           done();
         });

@@ -44,7 +44,7 @@ suite('join', function () {
         post('/join').
         set('content-type', 'application/json').
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
@@ -56,7 +56,7 @@ suite('join', function () {
         set('content-type', 'application/json').
         send({ port: 4000 }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
@@ -68,7 +68,7 @@ suite('join', function () {
         set('content-type', 'application/json').
         send({ host: 'localhost' }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
@@ -156,7 +156,7 @@ suite('join', function () {
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 4000 }).
         end(function (err, res) {
-          assert.that(err).is.not.null();
+          assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerFindSuccessor.isDone()).is.true();
           done();
