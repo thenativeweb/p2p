@@ -193,10 +193,80 @@ suite('Peer', () => {
         done();
       });
 
+      test('returns an object.', done => {
+        assert.that(peer.remote({ host: 'localhost', port: 3000 })).is.ofType('object');
+        done();
+      });
+
       suite('run', () => {
         test('is a function.', done => {
           assert.that(peer.remote({ host: 'localhost', port: 3000 }).run).is.ofType('function');
           done();
+        });
+
+        test('throws an error if the function to be called is missing.', done => {
+          assert.that(function () {
+            peer.remote({ host: 'localhost', port: 3000 }).run();
+          }).is.throwing('Function is missing.');
+          done();
+        });
+
+        test('throws an error if the callback is missing.', done => {
+          assert.that(function () {
+            peer.remote({ host: 'localhost', port: 3000 }).run('rpc');
+          }).is.throwing('Callback is missing.');
+          done();
+        });
+
+        test('calls the remote function with the given arguments.', done => {
+          const scope = nock('https://localhost:3000').
+            post('/rpc', { foo: 'ping' }).
+            reply(200, { foo: 'pong' });
+
+          peer.remote({ host: 'localhost', port: 3000 }).run('rpc', { foo: 'ping' }, (err, result) => {
+            assert.that(err).is.null();
+            assert.that(result).is.equalTo({ foo: 'pong' });
+            assert.that(scope.isDone()).is.true();
+            done();
+          });
+        });
+
+        test('calls the remote function with an empty object if no arguments are given.', done => {
+          const scope = nock('https://localhost:3000').
+            post('/rpc', {}).
+            reply(200, { foo: 'pong' });
+
+          peer.remote({ host: 'localhost', port: 3000 }).run('rpc', (err, result) => {
+            assert.that(err).is.null();
+            assert.that(result).is.equalTo({ foo: 'pong' });
+            assert.that(scope.isDone()).is.true();
+            done();
+          });
+        });
+
+        test('returns an error if the target is not reachable.', function (done) {
+          // Increase timeout to make this test work even when on slow networks
+          // (such as hotels' wireless networks).
+          this.timeout(10 * 1000);
+
+          peer.remote({ host: 'non-existent.local', port: 3000 }).run('rpc', err => {
+            assert.that(err).is.not.null();
+            assert.that(err.code).is.equalTo('ENOTFOUND');
+            done();
+          });
+        });
+
+        test('returns an error if a status code other than 200 is returned.', done => {
+          const scope = nock('https://localhost:3000').
+            post('/rpc', {}).
+            reply(500);
+
+          peer.remote({ host: 'localhost', port: 3000 }).run('rpc', err => {
+            assert.that(err).is.not.null();
+            assert.that(err.message).is.equalTo('Unexpected status code 500 when running rpc.');
+            assert.that(scope.isDone()).is.true();
+            done();
+          });
         });
       });
     });

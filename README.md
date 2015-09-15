@@ -177,13 +177,13 @@ peer.handle.foo = (payload, done) => {
 
 ### Calling actions on remote peers
 
-If you want to call an action on a remote peer, call the `remote.run` function, and provide the name of the action as well as its arguments and a callback. If the action returns a result, the callback has a `result` parameter.
+If you want to call an action on a remote peer, call the `remote.run` function, and provide the name of the action prefixed with `handle/` as well as its arguments and a callback. If the action returns a result, the callback has a `result` parameter.
 
 ```javascript
 peer.remote({
   host: 'localhost',
   port: 4000
-}).run('foo', { foo: 'bar' }, (err, result) => {
+}).run('handle/foo', { foo: 'bar' }, (err, result) => {
   // ...
 });
 ```

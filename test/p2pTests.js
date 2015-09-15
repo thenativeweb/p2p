@@ -7,8 +7,7 @@ const assert = require('assertthat'),
     freeport = require('freeport');
 
 const p2p = require('../lib/p2p'),
-    Peer = require('../lib/Peer'),
-    remote = require('../lib/remote');
+    Peer = require('../lib/Peer');
 
 /* eslint-disable no-process-env  */
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -89,14 +88,13 @@ suite('p2p', () => {
       const peer = p2p.peer({ host: 'localhost', port, serviceInterval });
 
       assert.that(peer).is.instanceOf(Peer);
-      remote.protocol = 'https';
       done();
     });
 
     test('runs an https server.', done => {
       const peer = p2p.peer({ host: 'localhost', port, privateKey, certificate, serviceInterval });
 
-      remote(peer.self.host, peer.self.port).run('self', err => {
+      peer.remote(peer.self).run('self', err => {
         assert.that(err).is.null();
         done();
       });
@@ -105,9 +103,8 @@ suite('p2p', () => {
     test('runs an http server.', done => {
       const peer = p2p.peer({ host: 'localhost', port, serviceInterval });
 
-      remote(peer.self.host, peer.self.port).run('self', err => {
+      peer.remote(peer.self).run('self', err => {
         assert.that(err).is.null();
-        remote.protocol = 'https';
         done();
       });
     });
