@@ -98,7 +98,7 @@ suite('p2p', function () {
       done();
     });
 
-    test('returns a peer.', function (done) {
+    test('returns an https peer.', function (done) {
       var peer = p2p.peer({
         host: 'localhost',
         port: port,
@@ -111,7 +111,19 @@ suite('p2p', function () {
       done();
     });
 
-    test('runs a server.', function (done) {
+    test('returns an http peer.', function (done) {
+      var peer = p2p.peer({
+        host: 'localhost',
+        port: port,
+        serviceInterval: serviceInterval
+      });
+
+      assert.that(peer).is.instanceOf(Peer);
+      remote.protocol = 'https';
+      done();
+    });
+
+    test('runs an https server.', function (done) {
       var peer = p2p.peer({
         host: 'localhost',
         port: port,
@@ -122,6 +134,20 @@ suite('p2p', function () {
 
       remote(peer.self.host, peer.self.port).run('self', function (err) {
         assert.that(err).is.null();
+        done();
+      });
+    });
+
+    test('runs an http server.', function (done) {
+      var peer = p2p.peer({
+        host: 'localhost',
+        port: port,
+        serviceInterval: serviceInterval
+      });
+
+      remote(peer.self.host, peer.self.port).run('self', function (err) {
+        assert.that(err).is.null();
+        remote.protocol = 'https';
         done();
       });
     });

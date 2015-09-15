@@ -27,6 +27,15 @@ var peer = p2p.peer({
 });
 ```
 
+If you do not want to use encryption you may omit the private key and the certificate. Then, the network will use plain text messages. Please note that this should be avoided since it is not secure!
+
+```javascript
+var peer = p2p.peer({
+  host: 'localhost',
+  port: 3000
+});
+```
+
 Optionally you may specify a `metadata` property to attach arbitrary data to a node. These metadata will be available to others when asking for information about the peer. You may use it, e.g., to store information on services a peer offers.
 
 ```javascript
