@@ -1,73 +1,73 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var closestPrecedingFinger = require('../../lib/routes/closestPrecedingFinger'),
+const closestPrecedingFinger = require('../../lib/routes/closestPrecedingFinger'),
     Endpoint = require('../../lib/Endpoint');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('closestPrecedingFinger', function () {
-  test('is a function.', function (done) {
+suite('closestPrecedingFinger', () => {
+  test('is a function.', done => {
     assert.that(closestPrecedingFinger).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       closestPrecedingFinger();
     }).is.throwing('Peer is missing.');
     done();
   });
 
-  suite('route', function () {
-    var peer;
+  suite('route', () => {
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.JoinedPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(closestPrecedingFinger(peer)).is.ofType('function');
       done();
     });
 
-    test('returns 400 if options are missing.', function (done) {
+    test('returns 400 if options are missing.', done => {
       request(peer.app).
         post('/closest-preceding-finger').
         set('content-type', 'application/json').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('returns 400 if id is missing.', function (done) {
+    test('returns 400 if id is missing.', done => {
       request(peer.app).
         post('/closest-preceding-finger').
         set('content-type', 'application/json').
         send({}).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('returns itself if the finger table is empty.', function (done) {
+    test('returns itself if the finger table is empty.', done => {
       request(peer.app).
         post('/closest-preceding-finger').
         set('content-type', 'application/json').
         send({ id: '219b433e1734312a30e3632a51fdab4fedd07bcc' }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(res.body).is.equalTo({
@@ -79,8 +79,8 @@ suite('closestPrecedingFinger', function () {
         });
     });
 
-    suite('returns the correct finger if id', function () {
-      test('is behind the last finger.', function (done) {
+    suite('returns the correct finger if id', () => {
+      test('is behind the last finger.', done => {
         // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
         // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
         // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
@@ -94,7 +94,7 @@ suite('closestPrecedingFinger', function () {
           post('/closest-preceding-finger').
           set('content-type', 'application/json').
           send({ id: '11c6541e6949f387bbcfdfcbad854b601607f286' }).
-          end(function (err, res) {
+          end((err, res) => {
             assert.that(err).is.null();
             assert.that(res.statusCode).is.equalTo(200);
             assert.that(res.body).is.equalTo({
@@ -106,7 +106,7 @@ suite('closestPrecedingFinger', function () {
           });
       });
 
-      test('is between two fingers.', function (done) {
+      test('is between two fingers.', done => {
         // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
         // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
         // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
@@ -120,7 +120,7 @@ suite('closestPrecedingFinger', function () {
           post('/closest-preceding-finger').
           set('content-type', 'application/json').
           send({ id: 'e6949f387bbcfdfcbad854b601607f28611c6541' }).
-          end(function (err, res) {
+          end((err, res) => {
             assert.that(err).is.null();
             assert.that(res.statusCode).is.equalTo(200);
             assert.that(res.body).is.equalTo({
@@ -132,7 +132,7 @@ suite('closestPrecedingFinger', function () {
           });
       });
 
-      test('is before the first finger.', function (done) {
+      test('is before the first finger.', done => {
         // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
         // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
         // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
@@ -146,7 +146,7 @@ suite('closestPrecedingFinger', function () {
           post('/closest-preceding-finger').
           set('content-type', 'application/json').
           send({ id: '219b433e1734312a30e3632a51fdab4fedd07bcc' }).
-          end(function (err, res) {
+          end((err, res) => {
             assert.that(err).is.null();
             assert.that(res.statusCode).is.equalTo(200);
             assert.that(res.body).is.equalTo({
@@ -158,7 +158,7 @@ suite('closestPrecedingFinger', function () {
           });
       });
 
-      test('exactly matches a finger.', function (done) {
+      test('exactly matches a finger.', done => {
         // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
         // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
         // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
@@ -172,7 +172,7 @@ suite('closestPrecedingFinger', function () {
           post('/closest-preceding-finger').
           set('content-type', 'application/json').
           send({ id: '07f28618c6541e6949f387bbcfdfcbad854b6016' }).
-          end(function (err, res) {
+          end((err, res) => {
             assert.that(err).is.null();
             assert.that(res.statusCode).is.equalTo(200);
             assert.that(res.body).is.equalTo({
@@ -184,7 +184,7 @@ suite('closestPrecedingFinger', function () {
           });
       });
 
-      test('exactly matches the peer itself.', function (done) {
+      test('exactly matches the peer itself.', done => {
         // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
         // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
         // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
@@ -198,7 +198,7 @@ suite('closestPrecedingFinger', function () {
           post('/closest-preceding-finger').
           set('content-type', 'application/json').
           send({ id: '12a30e3632a51fdab4fedd07bcc219b433e17343' }).
-          end(function (err, res) {
+          end((err, res) => {
             assert.that(err).is.null();
             assert.that(res.statusCode).is.equalTo(200);
             assert.that(res.body).is.equalTo({

@@ -1,13 +1,13 @@
 'use strict';
 
-var async = require('async'),
+const async = require('async'),
     flaschenpost = require('flaschenpost');
 
-var logger = flaschenpost.getLogger();
+const logger = flaschenpost.getLogger();
 
-var formRing = function (peers, callback) {
+const formRing = function (peers, callback) {
   logger.info('Forming ring...');
-  async.each(peers, function (peer, done) {
+  async.each(peers, (peer, done) => {
     peer.join(peers[0], done);
   }, callback);
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-var server = require('./serverBase');
+const server = require('./serverBase');
 
 server.run({
   http: {

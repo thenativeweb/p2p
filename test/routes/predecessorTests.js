@@ -1,47 +1,47 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var predecessor = require('../../lib/routes/predecessor');
+const predecessor = require('../../lib/routes/predecessor');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('predecessor', function () {
-  test('is a function.', function (done) {
+suite('predecessor', () => {
+  test('is a function.', done => {
     assert.that(predecessor).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       predecessor();
     }).is.throwing('Peer is missing.');
     done();
   });
 
   suite('route', function () {
-    var peer;
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.JoinedPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(predecessor(peer)).is.ofType('function');
       done();
     });
 
-    test('returns predecessor.', function (done) {
+    test('returns predecessor.', done => {
       request(peer.app).
         post('/predecessor').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(res.body).is.equalTo({
@@ -53,7 +53,7 @@ suite('predecessor', function () {
         });
     });
 
-    test('returns an empty object if peer is unbalanced.', function (done) {
+    test('returns an empty object if peer is unbalanced.', done => {
       peer = new mocks.UnbalancedPeerWithoutPredecessor({
         host: 'localhost',
         port: 3000
@@ -61,7 +61,7 @@ suite('predecessor', function () {
 
       request(peer.app).
         post('/predecessor').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(res.body).is.equalTo({});

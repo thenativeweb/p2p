@@ -1,14 +1,14 @@
 'use strict';
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     async = require('async');
 
-var createPeers = require('./createPeers'),
+const createPeers = require('./createPeers'),
     runTest = require('./runTest');
 
-runTest(__filename, function (configuration) {
-  return function (done) {
-    createPeers({ count: configuration.ringSize, serviceInterval: configuration.serviceInterval }, function (err, peers, env) {
+runTest(__filename, configuration => {
+  return done => {
+    createPeers({ count: configuration.ringSize, serviceInterval: configuration.serviceInterval }, (err, peers, env) => {
       assert.that(err).is.null();
       async.series([
         function (callback) {

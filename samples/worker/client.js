@@ -1,17 +1,17 @@
 'use strict';
 
-var url = require('url');
+const url = require('url');
 
-var flaschenpost = require('flaschenpost'),
+const flaschenpost = require('flaschenpost'),
     processEnv = require('processenv'),
     request = require('request'),
     uuid = require('uuidv4');
 
-var logger = flaschenpost.getLogger();
+const logger = flaschenpost.getLogger();
 
-var port = processEnv('PORT') || 3000;
+const port = processEnv('PORT') || 3000;
 
-var job = {
+const job = {
   id: process.argv[2] || uuid(),
   data: process.argv[3] || 'foo'
 };
@@ -19,12 +19,12 @@ var job = {
 request.post(url.format({
   protocol: 'http',
   hostname: 'localhost',
-  port: port,
+  port,
   pathname: '/job'
 }), {
   body: { value: job.id, data: job.data },
   json: true
-}, function (err, res) {
+}, (err, res) => {
   if (err || (res.statusCode !== 200)) {
     logger.fatal('Failed to send job.', err);
     /* eslint-disable no-process-exit */
@@ -33,7 +33,7 @@ request.post(url.format({
   }
 
   logger.info('Sent job {{job.id}} to {{target.host}}:{{target.port}}.', {
-    job: job,
-    target: res.body.node
+    job,
+    target: res.body.endpoint
   });
 });

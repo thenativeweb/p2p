@@ -1,22 +1,22 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var status = require('../../lib/routes/status');
+const status = require('../../lib/routes/status');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('status', function () {
-  test('is a function.', function (done) {
+suite('status', () => {
+  test('is a function.', done => {
     assert.that(status).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
+  test('throws an error if peer is missing.', done => {
     assert.that(function () {
       status();
     }).is.throwing('Peer is missing.');
@@ -24,7 +24,7 @@ suite('status', function () {
   });
 
   suite('route', function () {
-    var peer;
+    let peer;
 
     setup(function () {
       peer = new mocks.LonelyPeer({
@@ -33,12 +33,12 @@ suite('status', function () {
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(status(peer)).is.ofType('function');
       done();
     });
 
-    test('returns status.', function (done) {
+    test('returns status.', done => {
       request(peer.app).
         post('/status').
         end(function (err, res) {

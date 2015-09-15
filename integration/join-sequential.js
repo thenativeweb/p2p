@@ -1,41 +1,41 @@
 'use strict';
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     async = require('async');
 
-var createPeers = require('./createPeers'),
+const createPeers = require('./createPeers'),
     runTest = require('./runTest');
 
-runTest(__filename, function (configuration) {
-  return function (done) {
-    createPeers({ count: configuration.ringSize, serviceInterval: configuration.serviceInterval }, function (err, peers, env) {
+runTest(__filename, configuration => {
+  return done => {
+    createPeers({ count: configuration.ringSize, serviceInterval: configuration.serviceInterval }, (err, peers, env) => {
       assert.that(err).is.null();
       async.series([
-        function (callback) {
+        callback => {
           env.waitUntil(peers, { interval: configuration.serviceInterval }).have('status').equalTo({ status: 'lonely' }, callback);
         },
-        function (callback) {
-          var peersJoined = [];
+        callback => {
+          const peersJoined = [];
 
-          async.eachSeries(peers, function (peer, callbackEachSeries) {
+          async.eachSeries(peers, (peer, callbackEachSeries) => {
             peersJoined.push(peer);
             if (peersJoined.length === 1) {
               return callbackEachSeries(null);
             }
             async.series([
-              function (callbackSeries) {
+              callbackSeries => {
                 peer.join(peersJoined[0], callbackSeries);
               },
-              function (callbackSeries) {
+              callbackSeries => {
                 env.waitUntil(peersJoined, { interval: configuration.serviceInterval }).have('status').equalTo({ status: 'joined' }, callbackSeries);
               },
-              function (callbackSeries) {
+              callbackSeries => {
                 env.isRing(peersJoined, callbackSeries);
               }
             ], callbackEachSeries);
           }, callback);
         },
-        function (callback) {
+        callback => {
           env.stop(peers, callback);
         }
       ], done);

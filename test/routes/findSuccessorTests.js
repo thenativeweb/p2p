@@ -1,70 +1,70 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     nock = require('nock'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Endpoint = require('../../lib/Endpoint'),
+const Endpoint = require('../../lib/Endpoint'),
     findSuccessor = require('../../lib/routes/findSuccessor');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('findSuccessor', function () {
-  test('is a function.', function (done) {
+suite('findSuccessor', () => {
+  test('is a function.', done => {
     assert.that(findSuccessor).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       findSuccessor();
     }).is.throwing('Peer is missing.');
     done();
   });
 
-  suite('route', function () {
-    var peer;
+  suite('route', () => {
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.JoinedPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(findSuccessor(peer)).is.ofType('function');
       done();
     });
 
-    test('returns 400 if options are missing.', function (done) {
+    test('returns 400 if options are missing.', done => {
       request(peer.app).
         post('/find-successor').
         set('content-type', 'application/json').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('returns 400 if id is missing.', function (done) {
+    test('returns 400 if id is missing.', done => {
       request(peer.app).
         post('/find-successor').
         set('content-type', 'application/json').
         send({}).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    suite('returns the successor if the id', function () {
-      test('is between the peer itself and its successor.', function (done) {
+    suite('returns the successor if the id', () => {
+      test('is between the peer itself and its successor.', done => {
         // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
         // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
         // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
@@ -75,7 +75,7 @@ suite('findSuccessor', function () {
           post('/find-successor').
           set('content-type', 'application/json').
           send({ id: 'a51fdab4fedd07bcc219b433e1734312a30e3632' }).
-          end(function (err, res) {
+          end((err, res) => {
             assert.that(err).is.null();
             assert.that(res.statusCode).is.equalTo(200);
             assert.that(res.body).is.equalTo({
@@ -87,7 +87,7 @@ suite('findSuccessor', function () {
           });
       });
 
-      test('matches the peer\'s successor.', function (done) {
+      test('matches the peer\'s successor.', done => {
         // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
         // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
         // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
@@ -98,7 +98,7 @@ suite('findSuccessor', function () {
           post('/find-successor').
           set('content-type', 'application/json').
           send({ id: 'dc4f424bb575238275aac70b0324ca3a77d5b3dd' }).
-          end(function (err, res) {
+          end((err, res) => {
             assert.that(err).is.null();
             assert.that(res.statusCode).is.equalTo(200);
             assert.that(res.body).is.equalTo({
@@ -111,7 +111,7 @@ suite('findSuccessor', function () {
       });
     });
 
-    test('does not return the successor if the id matches the peer itself.', function (done) {
+    test('does not return the successor if the id matches the peer itself.', done => {
       // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
       // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
       // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
@@ -122,27 +122,27 @@ suite('findSuccessor', function () {
         post('/find-successor').
         set('content-type', 'application/json').
         send({ id: '12a30e3632a51fdab4fedd07bcc219b433e17343' }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           done();
         });
     });
 
-    test('returns 500 if finding the predecessor fails.', function (done) {
+    test('returns 500 if finding the predecessor fails.', done => {
       // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
       // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
       // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
       //
       // - ID: f424bb575238275aac70b0324ca3a77d5b3dddc4
 
-      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(500);
+      const remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(500);
 
       request(peer.app).
         post('/find-successor').
         set('content-type', 'application/json').
         send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerFindPredecessor.isDone()).is.true();
@@ -150,24 +150,24 @@ suite('findSuccessor', function () {
         });
     });
 
-    test('returns 500 if getting the successor of the found predecessor fails.', function (done) {
+    test('returns 500 if getting the successor of the found predecessor fails.', done => {
       // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
       // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
       // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
       //
       // - ID: f424bb575238275aac70b0324ca3a77d5b3dddc4
 
-      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
+      const remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
         host: 'localhost',
         port: 2000
       }));
-      var remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(500);
+      const remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(500);
 
       request(peer.app).
         post('/find-successor').
         set('content-type', 'application/json').
         send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerFindPredecessor.isDone()).is.true();
@@ -176,18 +176,18 @@ suite('findSuccessor', function () {
         });
     });
 
-    test('returns the successor of the found predecessor.', function (done) {
+    test('returns the successor of the found predecessor.', done => {
       // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
       // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
       // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
       //
       // - ID: f424bb575238275aac70b0324ca3a77d5b3dddc4
 
-      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
+      const remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
         host: 'localhost',
         port: 2000
       }));
-      var remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Endpoint({
+      const remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Endpoint({
         host: 'localhost',
         port: 6000
       }));
@@ -196,7 +196,7 @@ suite('findSuccessor', function () {
         post('/find-successor').
         set('content-type', 'application/json').
         send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(res.body).is.equalTo({
@@ -210,18 +210,18 @@ suite('findSuccessor', function () {
         });
     });
 
-    test('adds the successor to the list of well-known peers.', function (done) {
+    test('adds the successor to the list of well-known peers.', done => {
       // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
       // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
       // - 4000: dc4f424bb575238275aac70b0324ca3a77d5b3dd
       //
       // - ID: f424bb575238275aac70b0324ca3a77d5b3dddc4
 
-      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
+      const remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
         host: 'localhost',
         port: 2000
       }));
-      var remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Endpoint({
+      const remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Endpoint({
         host: 'localhost',
         port: 6000
       }));
@@ -234,7 +234,7 @@ suite('findSuccessor', function () {
         post('/find-successor').
         set('content-type', 'application/json').
         send({ id: 'f424bb575238275aac70b0324ca3a77d5b3dddc4' }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.wellKnownPeers.get()).is.equalTo([

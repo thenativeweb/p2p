@@ -1,23 +1,23 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Endpoint = require('../../lib/Endpoint'),
+const Endpoint = require('../../lib/Endpoint'),
     successors = require('../../lib/routes/successors');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('successors', function () {
-  test('is a function.', function (done) {
+suite('successors', () => {
+  test('is a function.', done => {
     assert.that(successors).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
+  test('throws an error if peer is missing.', done => {
     assert.that(function () {
       successors();
     }).is.throwing('Peer is missing.');
@@ -25,7 +25,7 @@ suite('successors', function () {
   });
 
   suite('route', function () {
-    var peer;
+    let peer;
 
     setup(function () {
       peer = new mocks.JoinedPeer({
@@ -34,15 +34,13 @@ suite('successors', function () {
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(successors(peer)).is.ofType('function');
       done();
     });
 
-    test('returns successors.', function (done) {
-      var i;
-
-      for (i = 0; i < 3; i++) {
+    test('returns successors.', done => {
+      for (let i = 0; i < 3; i++) {
         peer.successors.push(new Endpoint({ host: 'localhost', port: 4000 + (i * 1000) }));
       }
 
@@ -70,10 +68,8 @@ suite('successors', function () {
         });
     });
 
-    test('limits successors to 16.', function (done) {
-      var i;
-
-      for (i = 0; i < 20; i++) {
+    test('limits successors to 16.', done => {
+      for (let i = 0; i < 20; i++) {
         peer.successors.push(new Endpoint({ host: 'localhost', port: 4000 + (i * 1000) }));
       }
 

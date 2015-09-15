@@ -1,34 +1,32 @@
 'use strict';
 
-var fs = require('fs'),
+const fs = require('fs'),
     http = require('http'),
     path = require('path');
 
-var bodyParser = require('body-parser'),
+const bodyParser = require('body-parser'),
     express = require('express'),
     flaschenpost = require('flaschenpost');
 
-var p2p = require('../../lib/p2p');
+const p2p = require('../../lib/p2p');
 
-var serverBase = {};
+const serverBase = {};
 
 serverBase.run = function (options) {
-  var certificate = fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
-      privateKey = fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'privateKey.pem'));
+  const logger = flaschenpost.getLogger();
 
-  var app,
-      logger = flaschenpost.getLogger(),
-      peer;
+  const certificate = fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'certificate.pem')),
+      privateKey = fs.readFileSync(path.join(__dirname, '..', '..', 'keys', 'localhost.selfsigned', 'privateKey.pem'));
 
   /* eslint-disable no-process-env */
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   /* eslint-enable no-process-env */
 
-  peer = p2p.peer({
+  const peer = p2p.peer({
     host: 'localhost',
     port: options.p2p.port,
-    privateKey: privateKey,
-    certificate: certificate,
+    privateKey,
+    certificate,
     metadata: {
       host: 'localhost',
       port: options.http.port
@@ -39,39 +37,35 @@ serverBase.run = function (options) {
     serviceInterval: options.serviceInterval
   });
 
-  peer.on('status::*', function (status) {
+  peer.on('status::*', status => {
     logger.info('Changed status.', status);
   });
 
-  peer.on('environment::successor', function (successor) {
-    logger.info('Changed successor.', {
-      successor: successor
-    });
+  peer.on('environment::successor', successor => {
+    logger.info('Changed successor.', { successor });
   });
 
-  peer.on('environment::predecessor', function (predecessor) {
-    logger.info('Changed predecessor.', {
-      predecessor: predecessor
-    });
+  peer.on('environment::predecessor', predecessor => {
+    logger.info('Changed predecessor.', { predecessor });
   });
 
   peer.handle.process = function (payload, done) {
     logger.info('Processing job.', payload);
     done(null, {
-      node: peer.self
+      endpoint: peer.self
     });
   };
 
-  app = express();
+  const app = express();
 
   app.use(bodyParser.json());
 
-  app.post('/job', function (req, res) {
-    peer.getPeerFor(req.body.value, function (errGetPeerFor, node) {
+  app.post('/job', (req, res) => {
+    peer.getPeerFor(req.body.value, (errGetPeerFor, node) => {
       if (errGetPeerFor) {
         return res.sendStatus(500);
       }
-      peer.remote(node).run('process', req.body, function (err, result) {
+      peer.remote(node).run('process', req.body, (err, result) => {
         if (err) {
           return res.sendStatus(500);
         }

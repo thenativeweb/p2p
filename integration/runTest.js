@@ -1,25 +1,25 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var parse = require('parse-duration');
+const parse = require('parse-duration');
 
-var algorithms = require('./algorithms'),
+const algorithms = require('./algorithms'),
     configuration = require('./configuration.json');
 
-var runTest = function (testName, callback) {
-  var ringSizes = algorithms[configuration.ringSizes.algorithm](configuration.ringSizes.iterations);
-
+const runTest = function (testName, callback) {
   testName = path.basename(testName, '.js');
 
-  ringSizes.forEach(function (ringSize) {
-    var individualConfiguration = {
+  const ringSizes = algorithms[configuration.ringSizes.algorithm](configuration.ringSizes.iterations);
+
+  ringSizes.forEach(ringSize => {
+    const individualConfiguration = {
       serviceInterval: configuration.serviceInterval,
-      ringSize: ringSize,
+      ringSize,
       timeout: configuration.timeout
     };
 
-    var testFunction = callback(individualConfiguration);
+    const testFunction = callback(individualConfiguration);
 
     suite(testName, function () {
       /* eslint-disable no-process-env  */

@@ -1,55 +1,55 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
     assert = require('assertthat'),
     async = require('async'),
     parse = require('parse-duration');
 
-var createPeers = require('./createPeers'),
+const createPeers = require('./createPeers'),
     runTest = require('./runTest');
 
-runTest(__filename, function (configuration) {
-  return function (done) {
-    createPeers({ count: configuration.ringSize, serviceInterval: configuration.serviceInterval }, function (err, peers, env) {
-      var peersJoined = _.clone(peers);
+runTest(__filename, configuration => {
+  return done => {
+    createPeers({ count: configuration.ringSize, serviceInterval: configuration.serviceInterval }, (err, peers, env) => {
+      const peersJoined = _.clone(peers);
 
       assert.that(err).is.null();
       async.series([
-        function (callback) {
+        callback => {
           env.waitUntil(peers, { interval: configuration.serviceInterval }).have('status').equalTo({ status: 'lonely' }, callback);
         },
-        function (callback) {
+        callback => {
           env.formRing(peers, callback);
         },
-        function (callback) {
+        callback => {
           env.waitUntil(peers, { interval: configuration.serviceInterval }).have('status').equalTo({ status: 'joined' }, callback);
         },
-        function (callback) {
+        callback => {
           env.isRing(peers, callback);
         },
-        function (callback) {
-          async.eachSeries(peers, function (peer, callbackEachSeries) {
+        callback => {
+          async.eachSeries(peers, (peer, callbackEachSeries) => {
             if (peersJoined.length < 3) {
               return callbackEachSeries(null);
             }
             _.remove(peersJoined, peer);
             async.series([
-              function (callbackSeries) {
+              callbackSeries => {
                 peer.stop(callbackSeries);
               },
-              function (callbackSeries) {
+              callbackSeries => {
                 setTimeout(callbackSeries, parse(configuration.serviceInterval) * 1.5);
               },
-              function (callbackSeries) {
+              callbackSeries => {
                 env.waitUntil(peersJoined, { interval: configuration.serviceInterval }).have('status').equalTo({ status: 'joined' }, callbackSeries);
               },
-              function (callbackSeries) {
+              callbackSeries => {
                 env.isRing(peersJoined, callbackSeries);
               }
             ], callbackEachSeries);
           }, callback);
         },
-        function (callback) {
+        callback => {
           env.stop(peersJoined, callback);
         }
       ], done);

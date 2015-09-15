@@ -1,24 +1,24 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     nock = require('nock'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Endpoint = require('../../lib/Endpoint'),
+const Endpoint = require('../../lib/Endpoint'),
     stabilize = require('../../lib/routes/stabilize');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('stabilize', function () {
-  test('is a function.', function (done) {
+suite('stabilize', () => {
+  test('is a function.', done => {
     assert.that(stabilize).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
+  test('throws an error if peer is missing.', done => {
     assert.that(function () {
       stabilize();
     }).is.throwing('Peer is missing.');
@@ -26,7 +26,7 @@ suite('stabilize', function () {
   });
 
   suite('route', function () {
-    var peer;
+    let peer;
 
     setup(function () {
       peer = new mocks.JoinedPeer({
@@ -35,21 +35,21 @@ suite('stabilize', function () {
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(stabilize(peer)).is.ofType('function');
       done();
     });
 
-    test('fixes the successor if the successor is not reachable.', function (done) {
-      var fixSuccessorCalled = false;
+    test('fixes the successor if the successor is not reachable.', done => {
+      let fixSuccessorCalled = false;
 
-      peer.fixSuccessor = function () {
+      peer.fixSuccessor = () => {
         fixSuccessorCalled = true;
       };
 
       request(peer.app).
         post('/stabilize').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(fixSuccessorCalled).is.true();
@@ -57,15 +57,15 @@ suite('stabilize', function () {
         });
     });
 
-    suite('asks the successor about the successor\'s predecessor and', function () {
-      suite('does not update its successor if the successor', function () {
-        test('does not have a predecessor.', function (done) {
-          var remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200);
-          var remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
+    suite('asks the successor about the successor\'s predecessor and', () => {
+      suite('does not update its successor if the successor', () => {
+        test('does not have a predecessor.', done => {
+          const remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200);
+          const remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
 
           request(peer.app).
             post('/stabilize').
-            end(function (err, res) {
+            end((err, res) => {
               assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(200);
               assert.that(peer.successor).is.equalTo({
@@ -79,13 +79,13 @@ suite('stabilize', function () {
             });
         });
 
-        test('returns the peer itself.', function (done) {
-          var remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200, peer.self);
-          var remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
+        test('returns the peer itself.', done => {
+          const remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200, peer.self);
+          const remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
 
           request(peer.app).
             post('/stabilize').
-            end(function (err, res) {
+            end((err, res) => {
               assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(200);
               assert.that(peer.successor).is.equalTo({
@@ -99,13 +99,13 @@ suite('stabilize', function () {
             });
         });
 
-        test('returns the successor itself.', function (done) {
-          var remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200, peer.successor.self);
-          var remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
+        test('returns the successor itself.', done => {
+          const remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200, peer.successor.self);
+          const remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
 
           request(peer.app).
             post('/stabilize').
-            end(function (err, res) {
+            end((err, res) => {
               assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(200);
               assert.that(peer.successor).is.equalTo({
@@ -119,16 +119,16 @@ suite('stabilize', function () {
             });
         });
 
-        test('returns a peer between the successor and the peer.', function (done) {
-          var remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200, new Endpoint({
+        test('returns a peer between the successor and the peer.', done => {
+          const remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200, new Endpoint({
             host: 'localhost',
             port: 2000
           }));
-          var remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
+          const remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
 
           request(peer.app).
             post('/stabilize').
-            end(function (err, res) {
+            end((err, res) => {
               assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(200);
               assert.that(peer.successor).is.equalTo({
@@ -143,13 +143,13 @@ suite('stabilize', function () {
         });
       });
 
-      suite('updates its successor if the successor', function () {
-        test('returns a peer between the peer itself and the successor.', function (done) {
-          var remotePeerPredecessor = nock('https://localhost:2000').post('/predecessor').reply(200, new Endpoint({
+      suite('updates its successor if the successor', () => {
+        test('returns a peer between the peer itself and the successor.', done => {
+          const remotePeerPredecessor = nock('https://localhost:2000').post('/predecessor').reply(200, new Endpoint({
             host: 'localhost',
             port: 4000
           }));
-          var remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
+          const remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
 
           peer.successor = new Endpoint({
             host: 'localhost',
@@ -158,7 +158,7 @@ suite('stabilize', function () {
 
           request(peer.app).
             post('/stabilize').
-            end(function (err, res) {
+            end((err, res) => {
               assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(200);
               assert.that(peer.successor).is.equalTo({
@@ -174,13 +174,13 @@ suite('stabilize', function () {
       });
     });
 
-    test('notifies its successor about itself as potential predecessor.', function (done) {
-      var remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200);
-      var remotePeerNotify = nock('https://localhost:4000').post('/notify', peer.successor.self).reply(200);
+    test('notifies its successor about itself as potential predecessor.', done => {
+      const remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200);
+      const remotePeerNotify = nock('https://localhost:4000').post('/notify', peer.successor.self).reply(200);
 
       request(peer.app).
         post('/stabilize').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(remotePeerPredecessor.isDone()).is.true();
@@ -189,17 +189,17 @@ suite('stabilize', function () {
         });
     });
 
-    test('fixes successor if notifying the successor fails.', function (done) {
-      var remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200);
-      var fixSuccessorCalled = false;
+    test('fixes successor if notifying the successor fails.', done => {
+      const remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200);
+      let fixSuccessorCalled = false;
 
-      peer.fixSuccessor = function () {
+      peer.fixSuccessor = () => {
         fixSuccessorCalled = true;
       };
 
       request(peer.app).
         post('/stabilize').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(fixSuccessorCalled).is.true();

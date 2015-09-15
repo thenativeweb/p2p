@@ -1,87 +1,87 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Endpoint = require('../../lib/Endpoint'),
+const Endpoint = require('../../lib/Endpoint'),
     notify = require('../../lib/routes/notify');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('notify', function () {
-  test('is a function.', function (done) {
+suite('notify', () => {
+  test('is a function.', done => {
     assert.that(notify).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       notify();
     }).is.throwing('Peer is missing.');
     done();
   });
 
   suite('route', function () {
-    var peer;
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.LonelyPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(notify(peer)).is.ofType('function');
       done();
     });
 
-    test('returns 400 if options are missing.', function (done) {
+    test('returns 400 if options are missing.', done => {
       request(peer.app).
         post('/notify').
         set('content-type', 'application/json').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('returns 400 if host is missing.', function (done) {
+    test('returns 400 if host is missing.', done => {
       request(peer.app).
         post('/notify').
         set('content-type', 'application/json').
         send({ port: 4000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('returns 400 if port is missing.', function (done) {
+    test('returns 400 if port is missing.', done => {
       request(peer.app).
         post('/notify').
         set('content-type', 'application/json').
         send({ host: 'localhost' }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('sets the predecessor if the peer is unbalanced.', function (done) {
+    test('sets the predecessor if the peer is unbalanced.', done => {
       peer = new mocks.UnbalancedPeerWithoutPredecessor({ host: 'localhost', port: 3000 });
 
       request(peer.app).
         post('/notify').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 2000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.predecessor).is.equalTo({
@@ -93,7 +93,7 @@ suite('notify', function () {
         });
     });
 
-    test('sets the predecessor if the peer is joined, but the new predecessor is closer than the old one.', function (done) {
+    test('sets the predecessor if the peer is joined, but the new predecessor is closer than the old one.', done => {
       // Initially, the predecessor of 3000 is 4000. When 2000 notifies 3000,
       // 3000 detects that the id of 2000 is closer than the id of 4000, hence
       // it decides to accept 2000 as its new predecessor.
@@ -108,7 +108,7 @@ suite('notify', function () {
         post('/notify').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 2000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.predecessor).is.equalTo({
@@ -120,7 +120,7 @@ suite('notify', function () {
         });
     });
 
-    test('does not set the predecessor if the peer is joined, but the new predecessor is farther away than the old one.', function (done) {
+    test('does not set the predecessor if the peer is joined, but the new predecessor is farther away than the old one.', done => {
       // Initially, the predecessor of 3000 is 2000. When 4000 notifies 3000,
       // 3000 detects that the id of 4000 is farther away than the id of 2000,
       // hence it decides to ignore 4000 and to keep 2000 as its predecessor.
@@ -135,7 +135,7 @@ suite('notify', function () {
         post('/notify').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 4000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.predecessor).is.equalTo({

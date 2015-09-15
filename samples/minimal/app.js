@@ -1,9 +1,9 @@
 'use strict';
 
-var fs = require('fs'),
+const fs = require('fs'),
     path = require('path');
 
-var p2p = require('../../lib/p2p');
+const p2p = require('../../lib/p2p');
 
 /* eslint-disable no-process-env  */
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';

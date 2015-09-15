@@ -1,46 +1,46 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     nock = require('nock'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Endpoint = require('../../lib/Endpoint'),
+const Endpoint = require('../../lib/Endpoint'),
     fixPredecessor = require('../../lib/routes/fixPredecessor');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('fixPredecessor', function () {
-  test('is a function.', function (done) {
+suite('fixPredecessor', () => {
+  test('is a function.', done => {
     assert.that(fixPredecessor).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       fixPredecessor();
     }).is.throwing('Peer is missing.');
     done();
   });
 
-  suite('route', function () {
-    var peer;
+  suite('route', () => {
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.JoinedPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(fixPredecessor(peer)).is.ofType('function');
       done();
     });
 
-    test('returns 200 if there is no predecessor.', function (done) {
+    test('returns 200 if there is no predecessor.', done => {
       peer = new mocks.UnbalancedPeerWithoutPredecessor({
         host: 'localhost',
         port: 3000
@@ -48,22 +48,22 @@ suite('fixPredecessor', function () {
 
       request(peer.app).
         post('/fix-predecessor').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           done();
         });
     });
 
-    test('does not change the predecessor if the predecessor is reachable.', function (done) {
-      var remotePeerSelf = nock('https://localhost:2000').post('/self').reply(200, new Endpoint({
+    test('does not change the predecessor if the predecessor is reachable.', done => {
+      const remotePeerSelf = nock('https://localhost:2000').post('/self').reply(200, new Endpoint({
         host: 'localhost',
         port: 2000
       }));
 
       request(peer.app).
         post('/fix-predecessor').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.predecessor).is.equalTo({
@@ -76,10 +76,10 @@ suite('fixPredecessor', function () {
         });
     });
 
-    test('removes the predecessor if the predecessor is not reachable.', function (done) {
+    test('removes the predecessor if the predecessor is not reachable.', done => {
       request(peer.app).
         post('/fix-predecessor').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.predecessor).is.undefined();

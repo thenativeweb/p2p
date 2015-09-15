@@ -1,12 +1,12 @@
 'use strict';
 
-var knock = require('knockat');
+const knock = require('knockat');
 
-var getDockWorker = require('./getDockWorker'),
+const getDockWorker = require('./getDockWorker'),
     getId = require('../../lib/getId'),
     remote = require('../../lib/remote');
 
-var Application = function (options) {
+const Application = function (options) {
   this.containerName = undefined;
 
   this.id = undefined;
@@ -15,68 +15,60 @@ var Application = function (options) {
 };
 
 Application.prototype.start = function (callback) {
-  var that = this;
-
-  getDockWorker(function (errGetDockWorker, dockWorker) {
-    var containerName;
-
+  getDockWorker((errGetDockWorker, dockWorker) => {
     if (errGetDockWorker) {
       return callback(errGetDockWorker);
     }
 
-    containerName = 'thenativeweb-p2p-test-' + that.port;
+    const containerName = 'thenativeweb-p2p-test-' + this.port;
 
     dockWorker.startContainer({
       image: 'thenativeweb/p2p-test',
       name: containerName,
       env: {
         HOST: dockWorker.options.host,
-        PORT: that.port,
-        SERVICE_INTERVAL: that.serviceInterval
+        PORT: this.port,
+        SERVICE_INTERVAL: this.serviceInterval
       },
       ports: [
-        { container: that.port, host: that.port }
+        { container: this.port, host: this.port }
       ]
-    }, function (errStart) {
+    }, errStart => {
       if (errStart) {
         return callback(errStart);
       }
 
-      that.containerName = containerName;
-      that.id = getId(dockWorker.options.host + ':' + that.port);
+      this.containerName = containerName;
+      this.id = getId(dockWorker.options.host + ':' + this.port);
 
-      knock.at(dockWorker.options.host, that.port, callback);
+      knock.at(dockWorker.options.host, this.port, callback);
     });
   });
 };
 
 Application.prototype.join = function (target, callback) {
-  var that = this;
-
-  getDockWorker(function (errGetDockWorker, dockWorker) {
+  getDockWorker((errGetDockWorker, dockWorker) => {
     if (errGetDockWorker) {
       return callback(errGetDockWorker);
     }
 
-    remote(dockWorker.options.host, target.port).run('self', function (errTargetSelf, targetSelf) {
+    remote(dockWorker.options.host, target.port).run('self', (errTargetSelf, targetSelf) => {
       if (errTargetSelf) {
         return callback(errTargetSelf);
       }
 
-      remote(dockWorker.options.host, that.port).run('join', targetSelf, callback);
+      remote(dockWorker.options.host, this.port).run('join', targetSelf, callback);
     });
   });
 };
 
 Application.prototype.stop = function (callback) {
-  var that = this;
-
-  getDockWorker(function (errGetDockWorker, dockWorker) {
+  getDockWorker((errGetDockWorker, dockWorker) => {
     if (errGetDockWorker) {
       return callback(errGetDockWorker);
     }
 
-    dockWorker.stopContainer(that.containerName, function (err) {
+    dockWorker.stopContainer(this.containerName, err => {
       if (err) {
         return callback(err);
       }
@@ -91,16 +83,14 @@ Application.prototype.stop = function (callback) {
   'successor',
   'predecessor',
   'status'
-].forEach(function (fn) {
+].forEach(fn => {
   Application.prototype[fn] = function (callback) {
-    var that = this;
-
-    getDockWorker(function (errGetDockWorker, dockWorker) {
+    getDockWorker((errGetDockWorker, dockWorker) => {
       if (errGetDockWorker) {
         return callback(errGetDockWorker);
       }
 
-      remote(dockWorker.options.host, that.port).run(fn, callback);
+      remote(dockWorker.options.host, this.port).run(fn, callback);
     });
   };
 });

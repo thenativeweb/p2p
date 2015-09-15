@@ -1,15 +1,15 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
     async = require('async'),
     flaschenpost = require('flaschenpost');
 
-var logger = flaschenpost.getLogger();
+const logger = flaschenpost.getLogger();
 
-var isRing = function (peers, callback) {
-  var peersWithNeighbours = [];
+const isRing = function (peers, callback) {
+  const peersWithNeighbours = [];
 
-  var getPeerIndex = function (self) {
+  const getPeerIndex = function (self) {
     if (!self) {
       return -1;
     }
@@ -24,45 +24,42 @@ var isRing = function (peers, callback) {
 
   logger.info('Verifying ring...');
 
-  async.eachSeries(peers, function (peer, doneEach) {
+  async.eachSeries(peers, (peer, doneEach) => {
     async.series({
-      self: function (done) {
+      self: done => {
         peer.self(done);
       },
-      successor: function (done) {
+      successor: done => {
         peer.successor(done);
       },
-      predecessor: function (done) {
+      predecessor: done => {
         peer.predecessor(done);
       }
-    }, function (err, peerWithNeighbours) {
+    }, (err, peerWithNeighbours) => {
       if (err) {
         return doneEach(err);
       }
       peersWithNeighbours.push(peerWithNeighbours);
       doneEach(null);
     });
-  }, function (err) {
-    var predecessors,
-        successors;
-
+  }, err => {
     if (err) {
       return callback(err);
     }
 
-    peersWithNeighbours.forEach(function (peerWithNeighbours) {
+    peersWithNeighbours.forEach(peerWithNeighbours => {
       peerWithNeighbours.successor = getPeerIndex(peerWithNeighbours.successor);
       peerWithNeighbours.predecessor = getPeerIndex(peerWithNeighbours.predecessor);
     });
 
-    successors = _.uniq(_.pluck(peersWithNeighbours, 'successor').sort(), true);
-    if (successors[0] !== 0 || successors.length !== peers.length) {
-      return callback(new Error('Successors are broken.'));
-    }
+    const predecessors = _.uniq(_.pluck(peersWithNeighbours, 'predecessor').sort(), true),
+        successors = _.uniq(_.pluck(peersWithNeighbours, 'successor').sort(), true);
 
-    predecessors = _.uniq(_.pluck(peersWithNeighbours, 'predecessor').sort(), true);
     if (predecessors[0] !== 0 || predecessors.length !== peers.length) {
       return callback(new Error('Predecessors are broken.'));
+    }
+    if (successors[0] !== 0 || successors.length !== peers.length) {
+      return callback(new Error('Successors are broken.'));
     }
 
     callback(null);

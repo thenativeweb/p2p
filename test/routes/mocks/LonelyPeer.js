@@ -1,10 +1,10 @@
 'use strict';
 
-var util = require('util');
+const util = require('util');
 
-var Peer = require('../../../lib/Peer');
+const Peer = require('../../../lib/Peer');
 
-var LonelyPeer = function (options) {
+const LonelyPeer = function (options) {
   Peer.call(this, options);
 };
 

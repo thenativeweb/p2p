@@ -1,10 +1,9 @@
 'use strict';
 
-var fibonacci = function (iterations) {
-  var i,
-      result = [ 1, 1 ];
+const fibonacci = function (iterations) {
+  const result = [ 1, 1 ];
 
-  for (i = 2; i < (iterations + 2); i++) {
+  for (let i = 2; i < (iterations + 2); i++) {
     result[i] = result[i - 1] + result[i - 2];
   }
 

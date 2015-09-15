@@ -1,22 +1,21 @@
 'use strict';
 
-var freeport = require('freeport');
+const freeport = require('freeport');
 
-var Peer = require('./Peer');
+const Peer = require('./Peer');
 
-var createPeer = function (options, callback) {
-  freeport(function (errFreeport, port) {
-    var peer;
-
+const createPeer = function (options, callback) {
+  freeport((errFreeport, port) => {
     if (errFreeport) {
       return callback(errFreeport);
     }
 
-    peer = new Peer({
-      port: port,
+    const peer = new Peer({
+      port,
       serviceInterval: options.serviceInterval
     });
-    peer.start(function (errStart) {
+
+    peer.start(errStart => {
       if (errStart) {
         return callback(errStart);
       }

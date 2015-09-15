@@ -1,87 +1,87 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     nock = require('nock'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var join = require('../../lib/routes/join');
+const join = require('../../lib/routes/join');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('join', function () {
-  test('is a function.', function (done) {
+suite('join', () => {
+  test('is a function.', done => {
     assert.that(join).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       join();
     }).is.throwing('Peer is missing.');
     done();
   });
 
-  suite('route', function () {
-    var peer;
+  suite('route', () => {
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.LonelyPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(join(peer)).is.ofType('function');
       done();
     });
 
-    test('returns 400 if options are missing.', function (done) {
+    test('returns 400 if options are missing.', done => {
       request(peer.app).
         post('/join').
         set('content-type', 'application/json').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('returns 400 if host is missing.', function (done) {
+    test('returns 400 if host is missing.', done => {
       request(peer.app).
         post('/join').
         set('content-type', 'application/json').
         send({ port: 4000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('returns 400 if port is missing.', function (done) {
+    test('returns 400 if port is missing.', done => {
       request(peer.app).
         post('/join').
         set('content-type', 'application/json').
         send({ host: 'localhost' }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(400);
           done();
         });
     });
 
-    test('does nothing if the peer is told to join itself.', function (done) {
-      var findSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
+    test('does nothing if the peer is told to join itself.', done => {
+      const findSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
 
       request(peer.app).
         post('/join').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 3000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(findSuccessor.isDone()).is.false();
@@ -90,8 +90,8 @@ suite('join', function () {
         });
     });
 
-    test('does nothing if the peer is unbalanced.', function (done) {
-      var findSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
+    test('does nothing if the peer is unbalanced.', done => {
+      const findSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
 
       peer = new mocks.UnbalancedPeerWithoutPredecessor({
         host: 'localhost',
@@ -102,7 +102,7 @@ suite('join', function () {
         post('/join').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 3000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(findSuccessor.isDone()).is.false();
@@ -111,8 +111,8 @@ suite('join', function () {
         });
     });
 
-    test('does nothing if the peer is joined.', function (done) {
-      var findSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
+    test('does nothing if the peer is joined.', done => {
+      const findSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
 
       peer = new mocks.JoinedPeer({
         host: 'localhost',
@@ -123,7 +123,7 @@ suite('join', function () {
         post('/join').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 3000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(findSuccessor.isDone()).is.false();
@@ -132,15 +132,15 @@ suite('join', function () {
         });
     });
 
-    test('asks the remote peer for the local peer\'s successor.', function (done) {
-      var remotePeer = new mocks.LonelyPeer({ host: 'localhost', port: 4000 });
-      var remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(200, remotePeer.self);
+    test('asks the remote peer for the local peer\'s successor.', done => {
+      const remotePeer = new mocks.LonelyPeer({ host: 'localhost', port: 4000 });
+      const remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(200, remotePeer.self);
 
       request(peer.app).
         post('/join').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 4000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(remotePeerFindSuccessor.isDone()).is.true();
@@ -148,14 +148,14 @@ suite('join', function () {
         });
     });
 
-    test('returns 500 if the remote peer can not be reached.', function (done) {
-      var remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(500);
+    test('returns 500 if the remote peer can not be reached.', done => {
+      const remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(500);
 
       request(peer.app).
         post('/join').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 4000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(remotePeerFindSuccessor.isDone()).is.true();
@@ -163,15 +163,15 @@ suite('join', function () {
         });
     });
 
-    test('sets the successor to the successor returned by the remote peer.', function (done) {
-      var remotePeer = new mocks.LonelyPeer({ host: 'localhost', port: 4000 });
-      var remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(200, remotePeer.self);
+    test('sets the successor to the successor returned by the remote peer.', done => {
+      const remotePeer = new mocks.LonelyPeer({ host: 'localhost', port: 4000 });
+      const remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(200, remotePeer.self);
 
       request(peer.app).
         post('/join').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 4000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(remotePeerFindSuccessor.isDone()).is.true();
@@ -180,15 +180,15 @@ suite('join', function () {
         });
     });
 
-    test('sets the predecessor to undefined.', function (done) {
-      var remotePeer = new mocks.LonelyPeer({ host: 'localhost', port: 4000 });
-      var remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(200, remotePeer.self);
+    test('sets the predecessor to undefined.', done => {
+      const remotePeer = new mocks.LonelyPeer({ host: 'localhost', port: 4000 });
+      const remotePeerFindSuccessor = nock('https://localhost:4000').post('/find-successor').reply(200, remotePeer.self);
 
       request(peer.app).
         post('/join').
         set('content-type', 'application/json').
         send({ host: 'localhost', port: 4000 }).
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(remotePeerFindSuccessor.isDone()).is.true();

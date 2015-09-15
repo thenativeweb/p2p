@@ -1,16 +1,16 @@
 'use strict';
 
-var fs = require('fs'),
+const fs = require('fs'),
     path = require('path'),
     url = require('url');
 
-var crew = require('crew');
+const crew = require('crew');
 
-var instance;
+let instance;
 
-var getDockWorker = function (callback) {
+const getDockWorker = function (callback) {
   if (instance) {
-    return process.nextTick(function () {
+    return process.nextTick(() => {
       callback(null, instance);
     });
   }
@@ -25,12 +25,12 @@ var getDockWorker = function (callback) {
       caCertificate: fs.readFileSync(path.join(process.env.DOCKER_CERT_PATH, 'ca.pem'))
     }
     /* eslint-enable no-process-env */
-  }, function (errCrew, dockWorker) {
+  }, (errCrew, dockWorker) => {
     if (errCrew) {
       return callback(errCrew);
     }
 
-    dockWorker.ping(function (errPing) {
+    dockWorker.ping(errPing => {
       if (errPing) {
         return callback(errPing);
       }

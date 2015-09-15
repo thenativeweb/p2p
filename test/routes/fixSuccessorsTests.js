@@ -1,55 +1,55 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     nock = require('nock'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Endpoint = require('../../lib/Endpoint'),
+const Endpoint = require('../../lib/Endpoint'),
     fixSuccessors = require('../../lib/routes/fixSuccessors');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('fixSuccessors', function () {
-  test('is a function.', function (done) {
+suite('fixSuccessors', () => {
+  test('is a function.', done => {
     assert.that(fixSuccessors).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       fixSuccessors();
     }).is.throwing('Peer is missing.');
     done();
   });
 
-  suite('route', function () {
-    var peer;
+  suite('route', () => {
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.JoinedPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(fixSuccessors(peer)).is.ofType('function');
       done();
     });
 
-    test('fixes the successor if the successor is not reachable.', function (done) {
-      var fixSuccessorCalled = false;
+    test('fixes the successor if the successor is not reachable.', done => {
+      let fixSuccessorCalled = false;
 
-      peer.fixSuccessor = function () {
+      peer.fixSuccessor = () => {
         fixSuccessorCalled = true;
       };
 
       request(peer.app).
         post('/fix-successors').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(fixSuccessorCalled).is.true();
@@ -57,8 +57,8 @@ suite('fixSuccessors', function () {
         });
     });
 
-    test('stores the successors returned by its successor and prepends it with the successor itself.', function (done) {
-      var remotePeerSuccessors = nock('https://localhost:4000').post('/successors').reply(200, [
+    test('stores the successors returned by its successor and prepends it with the successor itself.', done => {
+      const remotePeerSuccessors = nock('https://localhost:4000').post('/successors').reply(200, [
         new Endpoint({
           host: 'localhost',
           port: 5000
@@ -71,7 +71,7 @@ suite('fixSuccessors', function () {
 
       request(peer.app).
         post('/fix-successors').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.successors).is.equalTo([
@@ -94,12 +94,12 @@ suite('fixSuccessors', function () {
         });
     });
 
-    test('stores at least the successor if the successor does not have any successors.', function (done) {
-      var remotePeerSuccessors = nock('https://localhost:4000').post('/successors').reply(200, []);
+    test('stores at least the successor if the successor does not have any successors.', done => {
+      const remotePeerSuccessors = nock('https://localhost:4000').post('/successors').reply(200, []);
 
       request(peer.app).
         post('/fix-successors').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.successors).is.equalTo([

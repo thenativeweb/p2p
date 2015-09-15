@@ -1,52 +1,52 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     nock = require('nock'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Endpoint = require('../../lib/Endpoint'),
+const Endpoint = require('../../lib/Endpoint'),
     fingersFor3000 = require('./data/fingersFor3000.json'),
     fixFingers = require('../../lib/routes/fixFingers');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('fixFingers', function () {
-  test('is a function.', function (done) {
+suite('fixFingers', () => {
+  test('is a function.', done => {
     assert.that(fixFingers).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       fixFingers();
     }).is.throwing('Peer is missing.');
     done();
   });
 
-  suite('route', function () {
-    var peer;
+  suite('route', () => {
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.JoinedPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(fixFingers(peer)).is.ofType('function');
       done();
     });
 
-    test('does not update the finger table if finding a new finger fails.', function (done) {
-      var remotePeerFindSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
+    test('does not update the finger table if finding a new finger fails.', done => {
+      const remotePeerFindSuccessor = nock('https://localhost:3000').post('/find-successor').reply(500);
 
       request(peer.app).
         post('/fix-fingers').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(500);
           assert.that(peer.fingers.length).is.equalTo(0);
@@ -55,17 +55,17 @@ suite('fixFingers', function () {
         });
     });
 
-    test('updates the finger table.', function (done) {
-      var nthFinger;
+    test('updates the finger table.', done => {
+      let nthFinger;
 
-      var remotePeerFindSuccessor = nock('https://localhost:3000').post('/find-successor').reply(function (uri, reqBody) {
+      const remotePeerFindSuccessor = nock('https://localhost:3000').post('/find-successor').reply(function (uri, reqBody) {
         nthFinger = fingersFor3000.indexOf(JSON.parse(reqBody).id);
         return [ 200, new Endpoint({ host: 'localhost', port: 4000 }) ];
       });
 
       request(peer.app).
         post('/fix-fingers').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(peer.fingers.length).is.equalTo(nthFinger + 1);

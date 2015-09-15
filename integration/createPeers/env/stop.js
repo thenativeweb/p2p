@@ -1,13 +1,13 @@
 'use strict';
 
-var async = require('async'),
+const async = require('async'),
     flaschenpost = require('flaschenpost');
 
-var logger = flaschenpost.getLogger();
+const logger = flaschenpost.getLogger();
 
-var stop = function (peers, callback) {
+const stop = function (peers, callback) {
   logger.info('Stopping peers...');
-  async.each(peers, function (peer, done) {
+  async.each(peers, (peer, done) => {
     peer.stop(done);
   }, callback);
 };

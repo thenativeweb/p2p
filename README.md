@@ -11,7 +11,7 @@ p2p implements a peer-to-peer protocol.
 First you need to add a reference to p2p.
 
 ```javascript
-var p2p = require('p2p');
+const p2p = require('p2p');
 ```
 
 Then create a new peer by calling the `peer` function and specifying the host and the port to listen on.
@@ -19,7 +19,7 @@ Then create a new peer by calling the `peer` function and specifying the host an
 Additionally, you need to specify a private key and a certificate. Please note that these values must be strings that contain data in `.pem` format.
 
 ```javascript
-var peer = p2p.peer({
+const peer = p2p.peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -30,7 +30,7 @@ var peer = p2p.peer({
 If you do not want to use encryption you may omit the private key and the certificate. Then, the network will use plain text messages. Please note that this should be avoided since it is not secure!
 
 ```javascript
-var peer = p2p.peer({
+const peer = p2p.peer({
   host: 'localhost',
   port: 3000
 });
@@ -39,7 +39,7 @@ var peer = p2p.peer({
 Optionally you may specify a `metadata` property to attach arbitrary data to a peer. These metadata will be available to others when asking for information about the peer. You may use it, e.g., to store information on services a peer offers.
 
 ```javascript
-var peer = p2p.peer({
+const peer = p2p.peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -55,7 +55,7 @@ var peer = p2p.peer({
 To join a network, provide the host and the port of another peer that you want to join using the `wellKnownPeers` property.
 
 ```javascript
-var peer = p2p.peer({
+const peer = p2p.peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -67,7 +67,7 @@ var peer = p2p.peer({
 You may also specify multiple peers. This increases the chance to join a network even in case that some peers are down.
 
 ```javascript
-var peer = p2p.peer({
+const peer = p2p.peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -83,7 +83,7 @@ var peer = p2p.peer({
 If the peer leaves the network, e.g. because of a connection error, it automatically tries to rejoin. For that it manages an internal list of peers that it got to know. To retrieve this list run the `wellKnownPeers.get` function.
 
 ```javascript
-var wellKnownPeers = peer.wellKnownPeers.get();
+const wellKnownPeers = peer.wellKnownPeers.get();
 ```
 
 You may store this list and re-use it when setting up a peer from scratch for the next time.
@@ -98,7 +98,7 @@ console.log(peer.status());
 Additionally, you may subscribe to the `status::*` event to get notified whenever the status of a peer changes.
 
 ```javascript
-peer.on('status::*', function (status) {
+peer.on('status::*', status => {
   console.log(status);
   // => {
   //      from: 'lonely',
@@ -114,7 +114,7 @@ If you are interested in entering a specific status, you may also subscribe to t
 By default, a peer tries to do housekeeping around every 30 seconds. If you need to change this, provide a property called `serviceInterval`.
 
 ```javascript
-var peer = p2p.peer({
+const peer = p2p.peer({
   host: 'localhost',
   port: 3000,
   privateKey: '...',
@@ -133,7 +133,7 @@ If you want to find the peer responsible for a value, call the `getEndpointFor` 
 As a result you will get the endpoint of the peer as well as its metadata. If no metadata have been set, an empty object is returned.
 
 ```javascript
-peer.getEndpointFor('foobar', function (err, endpoint, metadata) {
+peer.getEndpointFor('foobar', (err, endpoint, metadata) => {
   // ...
 });
 ```
@@ -143,11 +143,11 @@ peer.getEndpointFor('foobar', function (err, endpoint, metadata) {
 To detect whether the successor or predecessor of a peer changed, subscribe to the `environment::successor` and `environment::predecessor` events. Please note that the predecessor may be `undefined`.
 
 ```javascript
-peer.on('environment::successor', function (successor) {
+peer.on('environment::successor', successor => {
   // ...
 });
 
-peer.on('environment::predecessor', function (predecessor) {
+peer.on('environment::predecessor', predecessor => {
   // ...
 });
 ```
@@ -155,7 +155,7 @@ peer.on('environment::predecessor', function (predecessor) {
 Please note that you can also subscribe to any environmental changes using a wildcard.
 
 ```javascript
-peer.on('environment::*', function (successorOrPredecessor) {
+peer.on('environment::*', successorOrPredecessor => {
   // ...
 });
 ```
@@ -165,7 +165,7 @@ peer.on('environment::*', function (successorOrPredecessor) {
 To register custom actions, add them to the `handle` object. If an action is called on a peer, the module will call the appropriate function automatically. Once you are done you need to call the `done` callback. Optionally, you may provide a result.
 
 ```javascript
-peer.handle.foo = function (payload, done) {
+peer.handle.foo = (payload, done) => {
   // Do something with payload...
   if (err) {
     return done(err);
@@ -183,7 +183,7 @@ If you want to call an action on a remote peer, call the `remote.run` function, 
 peer.remote({
   host: 'localhost',
   port: 4000
-}).run('foo', { foo: 'bar' }, function (err, result) {
+}).run('foo', { foo: 'bar' }, (err, result) => {
   // ...
 });
 ```

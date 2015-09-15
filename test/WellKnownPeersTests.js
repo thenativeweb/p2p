@@ -1,25 +1,25 @@
 'use strict';
 
-var assert = require('assertthat');
+const assert = require('assertthat');
 
-var WellKnownPeers = require('../lib/WellKnownPeers');
+const WellKnownPeers = require('../lib/WellKnownPeers');
 
-suite('WellKnownPeers', function () {
-  test('is a function.', function (done) {
+suite('WellKnownPeers', () => {
+  test('is a function.', done => {
     assert.that(WellKnownPeers).is.ofType('function');
     done();
   });
 
-  suite('get', function () {
-    test('returns an empty array.', function (done) {
-      var wellKnownPeers = new WellKnownPeers();
+  suite('get', () => {
+    test('returns an empty array.', done => {
+      const wellKnownPeers = new WellKnownPeers();
 
       assert.that(wellKnownPeers.get()).is.equalTo([]);
       done();
     });
 
-    test('returns an array with all added peers.', function (done) {
-      var wellKnownPeers = new WellKnownPeers();
+    test('returns an array with all added peers.', done => {
+      const wellKnownPeers = new WellKnownPeers();
 
       wellKnownPeers.add([
         { host: 'localhost', port: 3000 },
@@ -34,9 +34,9 @@ suite('WellKnownPeers', function () {
     });
   });
 
-  suite('add', function () {
-    test('adds a single peer.', function (done) {
-      var wellKnownPeers = new WellKnownPeers();
+  suite('add', () => {
+    test('adds a single peer.', done => {
+      const wellKnownPeers = new WellKnownPeers();
 
       wellKnownPeers.add({ host: 'localhost', port: 3000 });
 
@@ -46,8 +46,8 @@ suite('WellKnownPeers', function () {
       done();
     });
 
-    test('adds multiple peers at once.', function (done) {
-      var wellKnownPeers = new WellKnownPeers();
+    test('adds multiple peers at once.', done => {
+      const wellKnownPeers = new WellKnownPeers();
 
       wellKnownPeers.add([
         { host: 'localhost', port: 3000 },
@@ -61,8 +61,8 @@ suite('WellKnownPeers', function () {
       done();
     });
 
-    test('adds multiple peers one by one.', function (done) {
-      var wellKnownPeers = new WellKnownPeers();
+    test('adds multiple peers one by one.', done => {
+      const wellKnownPeers = new WellKnownPeers();
 
       wellKnownPeers.add({ host: 'localhost', port: 3000 });
       wellKnownPeers.add({ host: 'localhost', port: 4000 });
@@ -74,8 +74,8 @@ suite('WellKnownPeers', function () {
       done();
     });
 
-    test('does not add duplicate peers.', function (done) {
-      var wellKnownPeers = new WellKnownPeers();
+    test('does not add duplicate peers.', done => {
+      const wellKnownPeers = new WellKnownPeers();
 
       wellKnownPeers.add([
         { host: 'localhost', port: 3000 },
@@ -95,8 +95,8 @@ suite('WellKnownPeers', function () {
       done();
     });
 
-    test('ignores empty arrays.', function (done) {
-      var wellKnownPeers = new WellKnownPeers();
+    test('ignores empty arrays.', done => {
+      const wellKnownPeers = new WellKnownPeers();
 
       wellKnownPeers.add([
         { host: 'localhost', port: 3000 },

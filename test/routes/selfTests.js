@@ -1,22 +1,22 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var self = require('../../lib/routes/self');
+const self = require('../../lib/routes/self');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('self', function () {
-  test('is a function.', function (done) {
+suite('self', () => {
+  test('is a function.', done => {
     assert.that(self).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
+  test('throws an error if peer is missing.', done => {
     assert.that(function () {
       self();
     }).is.throwing('Peer is missing.');
@@ -24,24 +24,24 @@ suite('self', function () {
   });
 
   suite('route', function () {
-    var peer;
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.LonelyPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(self(peer)).is.ofType('function');
       done();
     });
 
-    test('returns self.', function (done) {
+    test('returns self.', done => {
       request(peer.app).
         post('/self').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(res.body).is.equalTo({

@@ -1,47 +1,47 @@
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var assert = require('assertthat'),
+const assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var metadata = require('../../lib/routes/metadata');
+const metadata = require('../../lib/routes/metadata');
 
-var mocks = requireAll(path.join(__dirname, 'mocks'));
+const mocks = requireAll(path.join(__dirname, 'mocks'));
 
-suite('metadata', function () {
-  test('is a function.', function (done) {
+suite('metadata', () => {
+  test('is a function.', done => {
     assert.that(metadata).is.ofType('function');
     done();
   });
 
-  test('throws an error if peer is missing.', function (done) {
-    assert.that(function () {
+  test('throws an error if peer is missing.', done => {
+    assert.that(() => {
       metadata();
     }).is.throwing('Peer is missing.');
     done();
   });
 
-  suite('route', function () {
-    var peer;
+  suite('route', () => {
+    let peer;
 
-    setup(function () {
+    setup(() => {
       peer = new mocks.LonelyPeer({
         host: 'localhost',
         port: 3000
       });
     });
 
-    test('is a function.', function (done) {
+    test('is a function.', done => {
       assert.that(metadata(peer)).is.ofType('function');
       done();
     });
 
-    test('returns an empty object if no metadata are set.', function (done) {
+    test('returns an empty object if no metadata are set.', done => {
       request(peer.app).
         post('/metadata').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(res.body).is.equalTo({});
@@ -49,12 +49,12 @@ suite('metadata', function () {
         });
     });
 
-    test('returns metadata.', function (done) {
+    test('returns metadata.', done => {
       peer.metadata = { foo: 'bar' };
 
       request(peer.app).
         post('/metadata').
-        end(function (err, res) {
+        end((err, res) => {
           assert.that(err).is.null();
           assert.that(res.statusCode).is.equalTo(200);
           assert.that(res.body).is.equalTo({ foo: 'bar' });

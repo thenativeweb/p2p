@@ -1,33 +1,33 @@
 'use strict';
 
-var async = require('async'),
+const async = require('async'),
     cmp = require('comparejs'),
     flaschenpost = require('flaschenpost'),
     parse = require('parse-duration');
 
-var logger = flaschenpost.getLogger();
+const logger = flaschenpost.getLogger();
 
-var waitUntil = function (peers, options) {
+const waitUntil = function (peers, options) {
   return {
-    have: function (fn) {
+    have: fn => {
       return {
-        equalTo: function (expected, callback) {
-          logger.info('Waiting for peers to fulfill predicate...', { expected: expected });
+        equalTo: (expected, callback) => {
+          logger.info('Waiting for peers to fulfill predicate...', { expected });
 
-          async.each(peers, function (peer, doneEach) {
-            var actual;
+          async.each(peers, (peer, doneEach) => {
+            let actual;
 
             async.until(
-              function () {
+              () => {
                 return cmp.eq(actual, expected);
               },
-              function (doneUntil) {
-                peer[fn](function (err, result) {
+              doneUntil => {
+                peer[fn]((err, result) => {
                   if (err) {
                     return doneUntil(err);
                   }
                   actual = result;
-                  setTimeout(function () {
+                  setTimeout(() => {
                     doneUntil(null);
                   }, parse(options.interval));
                 });
