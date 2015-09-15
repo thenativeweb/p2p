@@ -26,6 +26,7 @@
     "lodash": "3.10.1",
     "parse-duration": "0.1.1",
     "processenv": "0.1.0",
+    "random-int": "1.0.0",
     "request": "2.62.0",
     "require-all": "1.1.0",
     "string.prototype.padleft": "1.0.0",
