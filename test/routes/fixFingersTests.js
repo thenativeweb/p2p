@@ -7,9 +7,9 @@ var assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var fingersFor3000 = require('./data/fingersFor3000.json'),
-    fixFingers = require('../../lib/routes/fixFingers'),
-    Node = require('../../lib/Node');
+var Endpoint = require('../../lib/Endpoint'),
+    fingersFor3000 = require('./data/fingersFor3000.json'),
+    fixFingers = require('../../lib/routes/fixFingers');
 
 var mocks = requireAll(path.join(__dirname, 'mocks'));
 
@@ -60,7 +60,7 @@ suite('fixFingers', function () {
 
       var remotePeerFindSuccessor = nock('https://localhost:3000').post('/find-successor').reply(function (uri, reqBody) {
         nthFinger = fingersFor3000.indexOf(JSON.parse(reqBody).id);
-        return [ 200, new Node({ host: 'localhost', port: 4000 }) ];
+        return [ 200, new Endpoint({ host: 'localhost', port: 4000 }) ];
       });
 
       request(peer.app).

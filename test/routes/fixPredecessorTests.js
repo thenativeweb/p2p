@@ -7,8 +7,8 @@ var assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var fixPredecessor = require('../../lib/routes/fixPredecessor'),
-    Node = require('../../lib/Node');
+var Endpoint = require('../../lib/Endpoint'),
+    fixPredecessor = require('../../lib/routes/fixPredecessor');
 
 var mocks = requireAll(path.join(__dirname, 'mocks'));
 
@@ -56,7 +56,7 @@ suite('fixPredecessor', function () {
     });
 
     test('does not change the predecessor if the predecessor is reachable.', function (done) {
-      var remotePeerSelf = nock('https://localhost:2000').post('/self').reply(200, new Node({
+      var remotePeerSelf = nock('https://localhost:2000').post('/self').reply(200, new Endpoint({
         host: 'localhost',
         port: 2000
       }));

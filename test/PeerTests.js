@@ -79,7 +79,7 @@ suite('Peer', function () {
     });
 
     suite('self', function () {
-      test('contains information on the node itself.', function (done) {
+      test('contains information on the endpoint of the peer.', function (done) {
         assert.that(peer.self).is.equalTo({
           host: 'localhost',
           port: 3000,
@@ -97,7 +97,7 @@ suite('Peer', function () {
     });
 
     suite('successor', function () {
-      test('initially contains information on the node itself.', function (done) {
+      test('initially contains information on the endpoint of the peer.', function (done) {
         assert.that(peer.successor).is.equalTo({
           host: 'localhost',
           port: 3000,
@@ -108,7 +108,7 @@ suite('Peer', function () {
     });
 
     suite('predecessor', function () {
-      test('initially contains information on the node itself.', function (done) {
+      test('initially contains information on the endpoint of the peer.', function (done) {
         assert.that(peer.predecessor).is.equalTo({
           host: 'localhost',
           port: 3000,
@@ -368,7 +368,7 @@ suite('Peer', function () {
         done();
       });
 
-      test('returns lonely if the node only knows about itself.', function (done) {
+      test('returns lonely if the peer only knows about itself.', function (done) {
         peer.setSuccessor({ host: peer.self.host, port: peer.self.port });
         peer.setPredecessor({ host: peer.self.host, port: peer.self.port });
 
@@ -376,7 +376,7 @@ suite('Peer', function () {
         done();
       });
 
-      test('returns joined if the node is not connected to itself.', function (done) {
+      test('returns joined if the peer is not connected to itself.', function (done) {
         peer.setSuccessor({ host: 'example.com', port: 3000 });
         peer.setPredecessor({ host: 'example.com', port: 3000 });
 
@@ -384,7 +384,7 @@ suite('Peer', function () {
         done();
       });
 
-      suite('returns unbalanced if the node', function () {
+      suite('returns unbalanced if the peer', function () {
         suite('is its own successor and it', function () {
           test('does not have a predecessor.', function (done) {
             peer.setSuccessor({ host: peer.self.host, port: peer.self.port });
@@ -486,22 +486,22 @@ suite('Peer', function () {
       });
     });
 
-    suite('getPeerFor', function () {
+    suite('getEndpointFor', function () {
       test('is a function.', function (done) {
-        assert.that(peer.getPeerFor).is.ofType('function');
+        assert.that(peer.getEndpointFor).is.ofType('function');
         done();
       });
 
       test('throws an error if value is missing.', function (done) {
         assert.that(function () {
-          peer.getPeerFor();
+          peer.getEndpointFor();
         }).is.throwing('Value is missing.');
         done();
       });
 
       test('throws an error if callback is missing.', function (done) {
         assert.that(function () {
-          peer.getPeerFor('foo');
+          peer.getEndpointFor('foo');
         }).is.throwing('Callback is missing.');
         done();
       });
@@ -519,9 +519,9 @@ suite('Peer', function () {
           post('/metadata').
           reply(200, { foo: 'bar' });
 
-        peer.getPeerFor('foo', function (err, node, metadata) {
+        peer.getEndpointFor('foo', function (err, endpoint, metadata) {
           assert.that(err).is.null();
-          assert.that(node).is.equalTo({
+          assert.that(endpoint).is.equalTo({
             host: 'example.com',
             port: 3000,
             id: getId('example.com:3000')
@@ -540,7 +540,7 @@ suite('Peer', function () {
           post('/find-successor', { id: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }).
           reply(500);
 
-        peer.getPeerFor('foo', function (err) {
+        peer.getEndpointFor('foo', function (err) {
           assert.that(err).is.not.null();
           assert.that(scope.isDone()).is.true();
           done();

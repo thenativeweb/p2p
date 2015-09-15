@@ -7,8 +7,8 @@ var assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var findSuccessor = require('../../lib/routes/findSuccessor'),
-    Node = require('../../lib/Node');
+var Endpoint = require('../../lib/Endpoint'),
+    findSuccessor = require('../../lib/routes/findSuccessor');
 
 var mocks = requireAll(path.join(__dirname, 'mocks'));
 
@@ -157,7 +157,7 @@ suite('findSuccessor', function () {
       //
       // - ID: f424bb575238275aac70b0324ca3a77d5b3dddc4
 
-      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Node({
+      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
         host: 'localhost',
         port: 2000
       }));
@@ -183,11 +183,11 @@ suite('findSuccessor', function () {
       //
       // - ID: f424bb575238275aac70b0324ca3a77d5b3dddc4
 
-      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Node({
+      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
         host: 'localhost',
         port: 2000
       }));
-      var remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Node({
+      var remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Endpoint({
         host: 'localhost',
         port: 6000
       }));
@@ -217,11 +217,11 @@ suite('findSuccessor', function () {
       //
       // - ID: f424bb575238275aac70b0324ca3a77d5b3dddc4
 
-      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Node({
+      var remotePeerFindPredecessor = nock('https://localhost:3000').post('/find-predecessor').reply(200, new Endpoint({
         host: 'localhost',
         port: 2000
       }));
-      var remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Node({
+      var remotePeerSuccessor = nock('https://localhost:2000').post('/successor').reply(200, new Endpoint({
         host: 'localhost',
         port: 6000
       }));

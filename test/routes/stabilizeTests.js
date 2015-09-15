@@ -7,7 +7,7 @@ var assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Node = require('../../lib/Node'),
+var Endpoint = require('../../lib/Endpoint'),
     stabilize = require('../../lib/routes/stabilize');
 
 var mocks = requireAll(path.join(__dirname, 'mocks'));
@@ -120,7 +120,7 @@ suite('stabilize', function () {
         });
 
         test('returns a peer between the successor and the peer.', function (done) {
-          var remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200, new Node({
+          var remotePeerPredecessor = nock('https://localhost:4000').post('/predecessor').reply(200, new Endpoint({
             host: 'localhost',
             port: 2000
           }));
@@ -145,13 +145,13 @@ suite('stabilize', function () {
 
       suite('updates its successor if the successor', function () {
         test('returns a peer between the peer itself and the successor.', function (done) {
-          var remotePeerPredecessor = nock('https://localhost:2000').post('/predecessor').reply(200, new Node({
+          var remotePeerPredecessor = nock('https://localhost:2000').post('/predecessor').reply(200, new Endpoint({
             host: 'localhost',
             port: 4000
           }));
           var remotePeerNotify = nock('https://localhost:4000').post('/notify').reply(200);
 
-          peer.successor = new Node({
+          peer.successor = new Endpoint({
             host: 'localhost',
             port: 2000
           });

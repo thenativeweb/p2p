@@ -7,8 +7,8 @@ var assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var fixSuccessors = require('../../lib/routes/fixSuccessors'),
-    Node = require('../../lib/Node');
+var Endpoint = require('../../lib/Endpoint'),
+    fixSuccessors = require('../../lib/routes/fixSuccessors');
 
 var mocks = requireAll(path.join(__dirname, 'mocks'));
 
@@ -59,11 +59,11 @@ suite('fixSuccessors', function () {
 
     test('stores the successors returned by its successor and prepends it with the successor itself.', function (done) {
       var remotePeerSuccessors = nock('https://localhost:4000').post('/successors').reply(200, [
-        new Node({
+        new Endpoint({
           host: 'localhost',
           port: 5000
         }),
-        new Node({
+        new Endpoint({
           host: 'localhost',
           port: 6000
         })

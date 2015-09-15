@@ -36,7 +36,7 @@ var peer = p2p.peer({
 });
 ```
 
-Optionally you may specify a `metadata` property to attach arbitrary data to a node. These metadata will be available to others when asking for information about the peer. You may use it, e.g., to store information on services a peer offers.
+Optionally you may specify a `metadata` property to attach arbitrary data to a peer. These metadata will be available to others when asking for information about the peer. You may use it, e.g., to store information on services a peer offers.
 
 ```javascript
 var peer = p2p.peer({
@@ -128,12 +128,12 @@ Please note that this affects the way the protocol works. Hence setting the `ser
 
 ### Finding the responsible peer
 
-If you want to find the peer responsible for a value, call the `getPeerFor` function and provide the value as a string.
+If you want to find the peer responsible for a value, call the `getEndpointFor` function and provide the value as a string.
 
-As a result you will get information on the peer itself as well as its metadata. If no metadata have been set, an empty object is returned.
+As a result you will get the endpoint of the peer as well as its metadata. If no metadata have been set, an empty object is returned.
 
 ```javascript
-peer.getPeerFor('foobar', function (err, node, metadata) {
+peer.getEndpointFor('foobar', function (err, endpoint, metadata) {
   // ...
 });
 ```

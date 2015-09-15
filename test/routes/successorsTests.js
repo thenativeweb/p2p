@@ -6,7 +6,7 @@ var assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Node = require('../../lib/Node'),
+var Endpoint = require('../../lib/Endpoint'),
     successors = require('../../lib/routes/successors');
 
 var mocks = requireAll(path.join(__dirname, 'mocks'));
@@ -43,7 +43,7 @@ suite('successors', function () {
       var i;
 
       for (i = 0; i < 3; i++) {
-        peer.successors.push(new Node({ host: 'localhost', port: 4000 + (i * 1000) }));
+        peer.successors.push(new Endpoint({ host: 'localhost', port: 4000 + (i * 1000) }));
       }
 
       request(peer.app).
@@ -74,7 +74,7 @@ suite('successors', function () {
       var i;
 
       for (i = 0; i < 20; i++) {
-        peer.successors.push(new Node({ host: 'localhost', port: 4000 + (i * 1000) }));
+        peer.successors.push(new Endpoint({ host: 'localhost', port: 4000 + (i * 1000) }));
       }
 
       request(peer.app).

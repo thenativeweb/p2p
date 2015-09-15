@@ -6,7 +6,7 @@ var assert = require('assertthat'),
     request = require('supertest'),
     requireAll = require('require-all');
 
-var Node = require('../../lib/Node'),
+var Endpoint = require('../../lib/Endpoint'),
     notify = require('../../lib/routes/notify');
 
 var mocks = requireAll(path.join(__dirname, 'mocks'));
@@ -102,7 +102,7 @@ suite('notify', function () {
       // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
       // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
 
-      peer.predecessor = new Node({ host: 'localhost', port: 4000 });
+      peer.predecessor = new Endpoint({ host: 'localhost', port: 4000 });
 
       request(peer.app).
         post('/notify').
@@ -129,7 +129,7 @@ suite('notify', function () {
       // - 2000: 07f28618c6541e6949f387bbcfdfcbad854b6016
       // - 3000: 12a30e3632a51fdab4fedd07bcc219b433e17343
 
-      peer.predecessor = new Node({ host: 'localhost', port: 2000 });
+      peer.predecessor = new Endpoint({ host: 'localhost', port: 2000 });
 
       request(peer.app).
         post('/notify').

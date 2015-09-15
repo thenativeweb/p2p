@@ -26,7 +26,7 @@
     "lodash": "3.10.1",
     "parse-duration": "0.1.1",
     "processenv": "0.1.0",
-    "request": "2.61.0",
+    "request": "2.62.0",
     "require-all": "1.1.0",
     "timer2": "0.2.3",
     "uuidv4": "0.3.1"

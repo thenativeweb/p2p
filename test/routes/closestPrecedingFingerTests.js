@@ -7,7 +7,7 @@ var assert = require('assertthat'),
     requireAll = require('require-all');
 
 var closestPrecedingFinger = require('../../lib/routes/closestPrecedingFinger'),
-    Node = require('../../lib/Node');
+    Endpoint = require('../../lib/Endpoint');
 
 var mocks = requireAll(path.join(__dirname, 'mocks'));
 
@@ -87,8 +87,8 @@ suite('closestPrecedingFinger', function () {
         //
         // - ID: 11c6541e6949f387bbcfdfcbad854b601607f286
 
-        peer.fingers[23] = new Node({ host: 'localhost', port: 4000 });
-        peer.fingers[42] = new Node({ host: 'localhost', port: 2000 });
+        peer.fingers[23] = new Endpoint({ host: 'localhost', port: 4000 });
+        peer.fingers[42] = new Endpoint({ host: 'localhost', port: 2000 });
 
         request(peer.app).
           post('/closest-preceding-finger').
@@ -113,8 +113,8 @@ suite('closestPrecedingFinger', function () {
         //
         // - ID: e6949f387bbcfdfcbad854b601607f28611c6541
 
-        peer.fingers[23] = new Node({ host: 'localhost', port: 4000 });
-        peer.fingers[42] = new Node({ host: 'localhost', port: 2000 });
+        peer.fingers[23] = new Endpoint({ host: 'localhost', port: 4000 });
+        peer.fingers[42] = new Endpoint({ host: 'localhost', port: 2000 });
 
         request(peer.app).
           post('/closest-preceding-finger').
@@ -139,8 +139,8 @@ suite('closestPrecedingFinger', function () {
         //
         // - ID: 219b433e1734312a30e3632a51fdab4fedd07bcc
 
-        peer.fingers[23] = new Node({ host: 'localhost', port: 4000 });
-        peer.fingers[42] = new Node({ host: 'localhost', port: 2000 });
+        peer.fingers[23] = new Endpoint({ host: 'localhost', port: 4000 });
+        peer.fingers[42] = new Endpoint({ host: 'localhost', port: 2000 });
 
         request(peer.app).
           post('/closest-preceding-finger').
@@ -165,8 +165,8 @@ suite('closestPrecedingFinger', function () {
         //
         // - ID: 07f28618c6541e6949f387bbcfdfcbad854b6016
 
-        peer.fingers[23] = new Node({ host: 'localhost', port: 4000 });
-        peer.fingers[42] = new Node({ host: 'localhost', port: 2000 });
+        peer.fingers[23] = new Endpoint({ host: 'localhost', port: 4000 });
+        peer.fingers[42] = new Endpoint({ host: 'localhost', port: 2000 });
 
         request(peer.app).
           post('/closest-preceding-finger').
@@ -191,8 +191,8 @@ suite('closestPrecedingFinger', function () {
         //
         // - ID: 12a30e3632a51fdab4fedd07bcc219b433e17343
 
-        peer.fingers[23] = new Node({ host: 'localhost', port: 4000 });
-        peer.fingers[42] = new Node({ host: 'localhost', port: 2000 });
+        peer.fingers[23] = new Endpoint({ host: 'localhost', port: 4000 });
+        peer.fingers[42] = new Endpoint({ host: 'localhost', port: 2000 });
 
         request(peer.app).
           post('/closest-preceding-finger').
