@@ -32,8 +32,7 @@ request.post(url.format({
     /* eslint-enable no-process-exit */
   }
 
-  logger.info('Sent job {{job.id}} to {{target.host}}:{{target.port}}.', {
-    job,
-    target: res.body.endpoint
-  });
+  const target = res.body.endpoint;
+
+  logger.info(`Sent job ${job.id} to ${target.host}:${target.port}.`, { job, target });
 });

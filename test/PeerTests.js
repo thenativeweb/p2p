@@ -1,11 +1,16 @@
 'use strict';
 
+const path = require('path');
+
 const assert = require('assertthat'),
     eventEmitter2 = require('eventemitter2'),
     nock = require('nock'),
+    requireAll = require('require-all'),
     sha1 = require('sha1');
 
 const Peer = require('../lib/Peer');
+
+const mocks = requireAll(path.join(__dirname, 'routes', 'mocks'));
 
 const EventEmitter2 = eventEmitter2.EventEmitter2;
 
@@ -615,6 +620,55 @@ suite('Peer', () => {
           assert.that(scope.isDone()).is.true();
           done();
         });
+      });
+    });
+
+    suite('isResponsibleFor', () => {
+      test('is a function.', done => {
+        assert.that(peer.isResponsibleFor).is.ofType('function');
+        done();
+      });
+
+      test('throws an error if value is missing.', done => {
+        assert.that(() => {
+          peer.isResponsibleFor();
+        }).is.throwing('Value is missing.');
+        done();
+      });
+
+      test('returns true if the peer is lonely.', done => {
+        assert.that(peer.isResponsibleFor('foo')).is.true();
+        done();
+      });
+
+      test('returns false if the peer is unbalanced.', done => {
+        peer = new mocks.UnbalancedPeerWithoutPredecessor({
+          host: 'localhost',
+          port: 3000
+        });
+
+        assert.that(peer.isResponsibleFor('foo')).is.false();
+        done();
+      });
+
+      test('returns true if the peer is joined and responsible.', done => {
+        peer = new mocks.JoinedPeer({
+          host: 'localhost',
+          port: 3000
+        });
+
+        assert.that(peer.isResponsibleFor('foo')).is.true();
+        done();
+      });
+
+      test('returns false if the peer is joined, but not responsible.', done => {
+        peer = new mocks.JoinedPeer({
+          host: 'localhost',
+          port: 3000
+        });
+
+        assert.that(peer.isResponsibleFor('bar')).is.false();
+        done();
       });
     });
   });

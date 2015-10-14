@@ -138,6 +138,13 @@ peer.getEndpointFor('foobar', (err, endpoint, metadata) => {
 });
 ```
 
+If you want to know whether a peer is responsible for a specific value, call the `isResponsibleFor` and provide the value in question.
+
+```javascript
+console.log(peer.isResponsibleFor('foobar'));
+// => true
+```
+
 ### Detecting changes in your neighborhood
 
 To detect whether the successor or predecessor of a peer changed, subscribe to the `environment::successor` and `environment::predecessor` events. Please note that the predecessor may be `undefined`.
